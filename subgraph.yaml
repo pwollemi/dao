@@ -1,0 +1,41 @@
+specVersion: 1.0.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Bounty
+    network: polygon-amoy
+    source:
+      address: "0x9e3fEBe685f59d90D312e2303ed967FC8310433E"
+      abi: Bounty
+      startBlock: 16603569
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AddedContributorBounty
+        - AddedProposalBounty
+        - ClaimedBounty
+        - Initialized
+        - OwnershipTransferred
+        - UpdatedBountyAmount
+      abis:
+        - name: Bounty
+          file: ./abis/Bounty.json
+      eventHandlers:
+        - event: AddedContributorBounty(indexed address,indexed address,uint256)
+          handler: handleAddedContributorBounty
+        - event: AddedProposalBounty(indexed address,indexed uint256,uint256)
+          handler: handleAddedProposalBounty
+        - event: ClaimedBounty(indexed address,uint256)
+          handler: handleClaimedBounty
+        - event: Initialized(uint64)
+          handler: handleInitialized
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: UpdatedBountyAmount(uint256)
+          handler: handleUpdatedBountyAmount
+      file: ./src/bounty.ts
