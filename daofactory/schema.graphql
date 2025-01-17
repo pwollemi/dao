@@ -1,0 +1,47 @@
+type ContractDeployed @entity(immutable: true) {
+  id: Bytes!
+  contractAddress: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type DAOCreated @entity(immutable: true) {
+  id: Bytes!
+  daoId: Bytes! # bytes32
+  description: String! # string
+  website: String! # string
+  linkedin: String! # string
+  twitter: String! # string
+  telegram: String! # string
+  name: String! # string
+  governor: Bytes! # address
+  timelock: Bytes! # address
+  governanceToken: Bytes! # address
+  communityToken: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type DAOSocialConfigUpdated @entity(immutable: true) {
+  id: Bytes!
+  daoId: Bytes! # bytes32
+  description: String! # string
+  website: String! # string
+  linkedin: String! # string
+  twitter: String! # string
+  telegram: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

@@ -1,5 +1,6 @@
 [
   { "inputs": [], "stateMutability": "nonpayable", "type": "constructor" },
+  { "inputs": [], "name": "ERC1167FailedCreateClone", "type": "error" },
   {
     "inputs": [
       { "internalType": "address", "name": "owner", "type": "address" }
@@ -313,8 +314,15 @@
   },
   {
     "inputs": [],
-    "name": "governanceTokenBytecode",
-    "outputs": [{ "internalType": "bytes", "name": "", "type": "bytes" }],
+    "name": "governanceTokenImplementation",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "governorImplementation",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -343,11 +351,32 @@
   },
   {
     "inputs": [
-      { "internalType": "bytes", "name": "_bytecode", "type": "bytes" }
+      {
+        "internalType": "address",
+        "name": "_timelockImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_governorImplementation",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_governanceTokenImplementation",
+        "type": "address"
+      }
     ],
-    "name": "setBytecodeForGovernorToken",
+    "name": "setImplementation",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "timelockImplementation",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
     "type": "function"
   },
   {
