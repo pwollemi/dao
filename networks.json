@@ -1,11 +1,11 @@
 {
-  "polygon-amoy": {
+  "sepolia": {
     "DAOFactory": {
-      "address": "0xe8a3b18c7358158b83de6716328f193e53c1a9c7",
-      "startBlock": 16979004
+      "address": "0xB299A1d65bfF0edf9c2f296cf1Ecd3F719d2A84C",
+      "startBlock": 7536386
     },
     "Bounty": {
-      "address": "0x9e3febe685f59d90d312e2303ed967fc8310433e"
+      "address": "0xDE6C9a683287912b04B0a5f7ffCb494457cC7502"
     }
   }
 }
