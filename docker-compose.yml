@@ -13,9 +13,7 @@ services:
     ports:
       - "3010:3010"
   graph-node:
-    build:
-      context: ./graph-node
-      dockerfile: Dockerfile
+    image: graphprotocol/graph-node
     ports:
       - "8000:8000"
       - "8001:8001"
@@ -62,3 +60,11 @@ services:
       POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data:Z
+  dao-subgraph:
+    build:
+      context: ./dao-subgraph
+      dockerfile: Dockerfile
+    depends_on:
+      - graph-node
+      - ipfs
+      - postgres

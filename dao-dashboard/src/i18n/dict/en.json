@@ -1,0 +1,155 @@
+{
+  "navigation": {
+    "vote": "VOTE",
+    "token": "TOKEN",
+    "bounty": "BOUNTY",
+    "pips": "PIP",
+    "copyAddress": "COPY ADDRESS",
+    "connect": "CONNECT",
+    "disconnect": "DISCONNECT",
+    "menu": "MENU",
+    "dashboard": "Dashboard"
+  },
+  "dashboard": {
+    "totalproposals": "Total Proposals",
+    "totalrevenue": "Total Revenue",
+    "pcebalance": "PCE Balance",
+    "claimable": "Claimable",
+    "percontributor": "PCE Per Contributor",
+    "fromlastmonth": "from last month",
+    "sincelasthour": "since last hour",
+    "recent": "Recent Succeeded PIPs",
+    "made": "You made",
+    "proposal_success": "proposals successfully"
+  },
+  "proposal": {
+    "proposalId": "ID",
+    "proposer": "Proposer",
+    "forVote": "For Vote",
+    "againstVote": "Against Vote",
+    "status": "Status",
+    "castVote": "Cast Vote",
+    "execute": "Execute",
+    "queue": "Queue",
+    "total": "Total Proposals",
+    "list": "A List of the proposals."
+  },
+  "sidebar": {
+    "dashboard": "Dashboard",
+    "proposals": "Proposals",
+    "token": "Token",
+    "bounty": "Bounty",
+    "pip": "PIP",
+    "pending": "Pending",
+    "closed": "Closed",
+    "submit": "Submit",
+    "delegate": "Delegate"
+  },
+  "home": {
+    "title": "Peace Coin DAO ダッシュボード",
+    "description": "ピースコインDAOのダッシュボードです"
+  },
+  "submit": {
+    "title": "Submit a Proposal",
+    "category1": "Suggest something",
+    "category2": "Asks funds for investment",
+    "category3": "Other",
+    "category4": "Deploying a Contract",
+    "category5": "Updating Timelock Variables",
+    "category6": "Updating Governor Variables",
+    "propose": "Propose",
+    "select": "Select a category",
+    "amount": "Amount",
+    "description": "Description",
+    "bytescode": "Bytes Codes",
+    "gracePeriod": "Grace Period - Seconds",
+    "min_delay": "Minimum Delay - Seconds",
+    "max_delay": "Maximum Delay - Seconds",
+    "quorum_votes": "Quorum Votes - 1000 Tokens",
+    "proposal_threshold": "Proposal Threshold - 10000 Tokens",
+    "proposal_maxOperations": "Proposal Max Operations - 10 Operations"
+  },
+  "vote": {
+    "close": "Closed Proposal",
+    "pending": "Pending Proposals",
+    "submit": "Submit Proposals",
+    "delegate": "Delegate Votes",
+    "propose": "Propose",
+    "select": "Select a category",
+    "amount": "Amount",
+    "description": "Description"
+  },
+  "token": {
+    "title": "Token Wallet",
+    "subtitle1": "Your current Token Balance",
+    "subtitle2": "Current Factor",
+    "createToken": "Create Token",
+    "tokenAddress": "Token Address",
+    "exchnageRate": "Exchange Rate",
+    "swapToLocal": "SwapToLocalToken",
+    "swapFromLocal": "SwapFromLocalToken",
+    "totalToken": "Total Tokens",
+    "list": "A list of the community tokens.",
+    "inputTokenInfo": "Input the token information",
+    "createTokenInfo": "This is the information to create the community token.",
+    "confirm": "Confirm"
+  },
+  "bounty": {
+    "title": "Bounty Program",
+    "description": "This Bounty Program is for providing bounty to the contributors",
+    "contributorBounty": "Contributor Bounty",
+    "proposal": "Proposal Bounty",
+    "addContributor": "Add Contributor Bounty",
+    "addProposal": "Add Proposal Bounty",
+    "claimProposal": "Claim Proposal Bounty",
+    "claimContributor": "Claim Contributor Bounty",
+    "contributor": "Contributor",
+    "contributorAddr": "Contributor Address",
+    "totalAmount": "Total Amount",
+    "bountyAmount": "Bounty Amount",
+    "proposalID": "Proposal Id",
+    "total": "Total Contributor"
+  },
+  "pipBar": {
+    "title": "PEACE COIN Improvement Proposals",
+    "all": "All",
+    "core": "Core",
+    "networking": "Networking",
+    "interface": "Interface",
+    "prc": "PRC",
+    "meta": "Meta",
+    "info": "Informational"
+  },
+  "pending": {
+    "title": "Pending Proposals",
+    "votingPower": "Voting Power"
+  },
+  "closed": {
+    "title": "Closed Proposals"
+  },
+  "delegate": {
+    "title": "Delegate Voting Power",
+    "description": "Before you can vote, you must assign your voting rights to either yourself, or you can assign it to a third party. Enter the Ethereum address of wallet to receive the voting rights.",
+    "address": "Address",
+    "delegate": "Delegate",
+    "votingPower": "Voting Power"
+  },
+  "faq": {
+    "title": "FAQ",
+    "q1": "How to Delegate Voting Power?",
+    "q2": "How to Propose a PIP?",
+    "q3": "How to Vote?",
+    "q4": "How to Queue Proposal?",
+    "q5": "How to Execute Proposal?",
+    "q6": "How to Add Bounty to someone else?",
+    "q7": "How to Claim Bounties?"
+  },
+  "daofaq": {
+    "title": "DAO FAQ",
+    "q1": "1. Create DAO. Basic DAO Settings?",
+    "q2": "2. Create DAO. Main DAO Settings?",
+    "q3": "3. Propose. How to find DAOs?",
+    "q4": "4. Propose. How to find proposals?",
+    "q5": "5. Delegate. How to delegate voting power?"
+  }
+}

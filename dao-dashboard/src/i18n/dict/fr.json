@@ -1,0 +1,155 @@
+{
+  "navigation": {
+    "vote": "VOTER",
+    "token": "TOKEN",
+    "bounty": "PRIME",
+    "pips": "PIP",
+    "copyAddress": "COPIER L'ADRESSE",
+    "connect": "CONNECTER",
+    "disconnect": "DÉCONNECTER",
+    "menu": "MENU",
+    "dashboard": "Tableau de Bord"
+  },
+  "dashboard": {
+    "totalproposals": "Propositions Totales",
+    "totalrevenue": "Revenus Totaux",
+    "pcebalance": "Solde PCE",
+    "claimable": "Réclamable",
+    "percontributor": "PCE Par Contributeur",
+    "fromlastmonth": "depuis le mois dernier",
+    "sincelasthour": "depuis la dernière heure",
+    "recent": "PIPs Récents Réussis",
+    "made": "Vous avez fait",
+    "proposal_success": "propositions avec succès"
+  },
+  "proposal": {
+    "proposalId": "ID",
+    "proposer": "Proposant",
+    "forVote": "Pour",
+    "againstVote": "Contre",
+    "status": "Statut",
+    "castVote": "Voter",
+    "execute": "Exécuter",
+    "queue": "Mettre en file",
+    "total": "Propositions Totales",
+    "list": "Liste des propositions"
+  },
+  "sidebar": {
+    "dashboard": "Tableau de Bord",
+    "proposals": "Propositions",
+    "token": "Token",
+    "bounty": "Prime",
+    "pip": "PIP",
+    "pending": "En Attente",
+    "closed": "Fermé",
+    "submit": "Soumettre",
+    "delegate": "Déléguer"
+  },
+  "home": {
+    "title": "Tableau de Bord de Peace Coin DAO",
+    "description": "Voici le tableau de bord de Peace Coin DAO"
+  },
+  "submit": {
+    "title": "Soumettre une Proposition",
+    "category1": "Suggérer quelque chose",
+    "category2": "Demander des fonds pour un investissement",
+    "category3": "Autre",
+    "category4": "Déployer un Contrat",
+    "category5": "Mettre à jour les Variables de TimeLock",
+    "category6": "Mettre à jour les Variables de Gouverneur",
+    "propose": "Proposer",
+    "select": "Sélectionner une catégorie",
+    "amount": "Montant",
+    "description": "Description",
+    "bytescode": "Codes en Octets",
+    "gracePeriod": "Période de Grâce - Secondes",
+    "min_delay": "Délai Minimum - Secondes",
+    "max_delay": "Délai Maximum - Secondes",
+    "quorum_votes": "Votes du Quorum - 1000 Tokens",
+    "proposal_threshold": "Seuil de Proposition - 10000 Tokens",
+    "proposal_maxOperations": "Nombre Maximum d'Opérations de Proposition - 10 Opérations"
+  },
+  "vote": {
+    "close": "Proposition Fermée",
+    "pending": "Propositions en Attente",
+    "submit": "Soumettre des Propositions",
+    "delegate": "Déléguer des Votes",
+    "propose": "Proposer",
+    "select": "Sélectionner une catégorie",
+    "amount": "Montant",
+    "description": "Description"
+  },
+  "token": {
+    "title": "Portefeuille de Tokens",
+    "subtitle1": "Votre Solde de Tokens Actuel",
+    "subtitle2": "Facteur Actuel",
+    "createToken": "Créer un Token",
+    "tokenAddress": "Adresse du Token",
+    "exchnageRate": "Taux de Change",
+    "swapToLocal": "Échanger Vers le Token Local",
+    "swapFromLocal": "Échanger Depuis le Token Local",
+    "totalToken": "Total des Tokens",
+    "list": "Liste des tokens communautaires",
+    "inputTokenInfo": "Saisissez les informations du jeton",
+    "createTokenInfo": "Voici les informations pour créer le jeton de la communauté.",
+    "confirm": "Confirmer"
+  },
+  "bounty": {
+    "title": "Programme de Primes",
+    "description": "Ce programme de primes vise à récompenser les contributeurs",
+    "contributorBounty": "Prime du Contributeur",
+    "proposal": "Prime de Proposition",
+    "addContributor": "Ajouter une Prime de Contributeur",
+    "addProposal": "Ajouter une Prime de Proposition",
+    "claimProposal": "Réclamer la Prime de Proposition",
+    "claimContributor": "Réclamer la Prime du Contributeur",
+    "contributor": "Contributeur",
+    "contributorAddr": "Adresse du Contributeur",
+    "totalAmount": "Montant Total",
+    "bountyAmount": "Montant de la Prime",
+    "proposalID": "ID de la Proposition",
+    "total": "Total des Contributeurs"
+  },
+  "pipBar": {
+    "title": "Propositions d'Amélioration de PEACE COIN",
+    "all": "Tout",
+    "core": "Noyau",
+    "networking": "Réseau",
+    "interface": "Interface",
+    "prc": "PRC",
+    "meta": "Méta",
+    "info": "Informationnel"
+  },
+  "pending": {
+    "title": "Propositions en Attente",
+    "votingPower": "Pouvoir de Vote"
+  },
+  "closed": {
+    "title": "Propositions Fermées"
+  },
+  "delegate": {
+    "title": "Déléguer le Pouvoir de Vote",
+    "description": "Avant de pouvoir voter, vous devez attribuer vos droits de vote à vous-même ou à un tiers. Entrez l'adresse Ethereum du portefeuille qui recevra les droits de vote.",
+    "address": "Adresse",
+    "delegate": "Déléguer",
+    "votingPower": "Pouvoir de Vote"
+  },
+  "faq": {
+    "title": "FAQ",
+    "q1": "Comment déléguer le pouvoir de vote ?",
+    "q2": "Comment proposer un PIP ?",
+    "q3": "Comment voter ?",
+    "q4": "Comment mettre en file d'attente une proposition ?",
+    "q5": "Comment exécuter une proposition ?",
+    "q6": "Comment ajouter une prime à quelqu'un d'autre ?",
+    "q7": "Comment réclamer des primes ?"
+  },
+  "daofaq": {
+    "title": "DAO FAQ",
+    "q1": "1. Create DAO. Basic DAO Settings?",
+    "q2": "2. Create DAO. Main DAO Settings?",
+    "q3": "3. Propose. How to find DAOs?",
+    "q4": "4. Propose. How to find proposals?",
+    "q5": "5. Delegate. How to delegate voting power?"
+  }
+}

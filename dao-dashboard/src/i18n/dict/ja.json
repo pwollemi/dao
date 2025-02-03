@@ -1,0 +1,155 @@
+{
+  "navigation": {
+    "vote": "投票",
+    "token": "トークン",
+    "bounty": "報酬",
+    "pips": "PIP",
+    "copyAddress": "アドレスをコピー",
+    "connect": "接続",
+    "disconnect": "切断",
+    "menu": "メニュー",
+    "dashboard": "ダッシュボード"
+  },
+  "dashboard": {
+    "totalproposals": "提案の合計",
+    "totalrevenue": "総収益",
+    "pcebalance": "PCE 残高",
+    "claimable": "請求可能",
+    "percontributor": "貢献者ごとのPCE",
+    "fromlastmonth": "先月から",
+    "sincelasthour": "過去1時間から",
+    "recent": "最近成功したPIP",
+    "made": "あなたが作成した",
+    "proposal_success": "提案が成功しました"
+  },
+  "proposal": {
+    "proposalId": "ID",
+    "proposer": "提案者",
+    "forVote": "賛成票",
+    "againstVote": "反対票",
+    "status": "ステータス",
+    "castVote": "投票する",
+    "execute": "実行する",
+    "queue": "キューに入れる",
+    "total": "提案の合計",
+    "list": "提案のリスト"
+  },
+  "sidebar": {
+    "dashboard": "ダッシュボード",
+    "proposals": "提案",
+    "token": "トークン",
+    "bounty": "報酬",
+    "pip": "PIP",
+    "pending": "保留中",
+    "closed": "終了",
+    "submit": "送信",
+    "delegate": "委任"
+  },
+  "home": {
+    "title": "Peace Coin DAO ダッシュボード",
+    "description": "これは Peace Coin DAO のダッシュボードです"
+  },
+  "submit": {
+    "title": "提案を提出する",
+    "category1": "何かを提案する",
+    "category2": "投資資金を要求する",
+    "category3": "その他",
+    "category4": "コントラクトをデプロイする",
+    "category5": "タイムロック変数を更新する",
+    "category6": "ガバナー変数を更新する",
+    "propose": "提案する",
+    "select": "カテゴリを選択する",
+    "amount": "金額",
+    "description": "説明",
+    "bytescode": "バイトコード",
+    "gracePeriod": "猶予期間 - 秒",
+    "min_delay": "最小遅延 - 秒",
+    "max_delay": "最大遅延 - 秒",
+    "quorum_votes": "定足数投票 - 1000トークン",
+    "proposal_threshold": "提案しきい値 - 10000トークン",
+    "proposal_maxOperations": "提案最大操作数 - 10操作"
+  },
+  "vote": {
+    "close": "終了した提案",
+    "pending": "保留中の提案",
+    "submit": "提案を送信",
+    "delegate": "投票を委任",
+    "propose": "提案する",
+    "select": "カテゴリを選択",
+    "amount": "金額",
+    "description": "説明"
+  },
+  "token": {
+    "title": "トークンウォレット",
+    "subtitle1": "現在のトークン残高",
+    "subtitle2": "現在のファクター",
+    "createToken": "トークンを作成",
+    "tokenAddress": "トークンアドレス",
+    "exchnageRate": "交換レート",
+    "swapToLocal": "ローカルトークンにスワップ",
+    "swapFromLocal": "ローカルトークンからスワップ",
+    "totalToken": "トークンの合計",
+    "list": "コミュニティトークンのリスト",
+    "inputTokenInfo": "トークン情報を入力してください",
+    "createTokenInfo": "コミュニティトークンを作成するための情報です。",
+    "confirm": "確認"
+  },
+  "bounty": {
+    "title": "報酬プログラム",
+    "description": "この報酬プログラムは、貢献者に報酬を提供するためのものです",
+    "contributorBounty": "貢献者報酬",
+    "proposal": "提案報酬",
+    "addContributor": "貢献者報酬を追加",
+    "addProposal": "提案報酬を追加",
+    "claimProposal": "提案報酬を請求",
+    "claimContributor": "貢献者報酬を請求",
+    "contributor": "貢献者",
+    "contributorAddr": "貢献者のアドレス",
+    "totalAmount": "合計金額",
+    "bountyAmount": "報酬金額",
+    "proposalID": "提案ID",
+    "total": "貢献者の合計"
+  },
+  "pipBar": {
+    "title": "PEACE COIN 改善提案",
+    "all": "すべて",
+    "core": "コア",
+    "networking": "ネットワーキング",
+    "interface": "インターフェース",
+    "prc": "PRC",
+    "meta": "メタ",
+    "info": "情報"
+  },
+  "pending": {
+    "title": "保留中の提案",
+    "votingPower": "投票権"
+  },
+  "closed": {
+    "title": "終了した提案"
+  },
+  "delegate": {
+    "title": "投票権を委任",
+    "description": "投票する前に、自分自身または第三者に投票権を割り当てる必要があります。投票権を受け取るウォレットのEthereumアドレスを入力してください。",
+    "address": "アドレス",
+    "delegate": "委任",
+    "votingPower": "投票権"
+  },
+  "faq": {
+    "title": "FAQ",
+    "q1": "投票権を委任するには？",
+    "q2": "PIPを提案するには？",
+    "q3": "投票するには？",
+    "q4": "提案をキューに入れるには？",
+    "q5": "提案を実行するには？",
+    "q6": "他の人に報酬を追加するには？",
+    "q7": "報酬を請求するには？"
+  },
+  "daofaq": {
+    "title": "DAO FAQ",
+    "q1": "1. Create DAO. Basic DAO Settings?",
+    "q2": "2. Create DAO. Main DAO Settings?",
+    "q3": "3. Propose. How to find DAOs?",
+    "q4": "4. Propose. How to find proposals?",
+    "q5": "5. Delegate. How to delegate voting power?"
+  }
+}

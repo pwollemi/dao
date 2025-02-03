@@ -1,0 +1,155 @@
+{
+  "navigation": {
+    "vote": "VOTAR",
+    "token": "TOKEN",
+    "bounty": "RECOMPENSA",
+    "pips": "PIP",
+    "copyAddress": "COPIAR DIRECCIÓN",
+    "connect": "CONECTAR",
+    "disconnect": "DESCONECTAR",
+    "menu": "MENÚ",
+    "dashboard": "Panel de Control"
+  },
+  "dashboard": {
+    "totalproposals": "Propuestas Totales",
+    "totalrevenue": "Ingresos Totales",
+    "pcebalance": "Saldo PCE",
+    "claimable": "Reclamable",
+    "percontributor": "PCE Por Contribuidor",
+    "fromlastmonth": "desde el mes pasado",
+    "sincelasthour": "desde la última hora",
+    "recent": "PIPs Recientes Aprobados",
+    "made": "Has hecho",
+    "proposal_success": "propuestas con éxito"
+  },
+  "proposal": {
+    "proposalId": "ID",
+    "proposer": "Proponente",
+    "forVote": "Votos a Favor",
+    "againstVote": "Votos en Contra",
+    "status": "Estado",
+    "castVote": "Emitir Voto",
+    "execute": "Ejecutar",
+    "queue": "Cola",
+    "total": "Propuestas Totales",
+    "list": "Lista de las propuestas"
+  },
+  "sidebar": {
+    "dashboard": "Panel de Control",
+    "proposals": "Propuestas",
+    "token": "Token",
+    "bounty": "Recompensa",
+    "pip": "PIP",
+    "pending": "Pendiente",
+    "closed": "Cerrado",
+    "submit": "Enviar",
+    "delegate": "Delegar"
+  },
+  "home": {
+    "title": "Panel de Control de Peace Coin DAO",
+    "description": "Este es el panel de control de Peace Coin DAO"
+  },
+  "submit": {
+    "title": "Enviar una Propuesta",
+    "category1": "Sugerir algo",
+    "category2": "Solicitar fondos para inversión",
+    "category3": "Otro",
+    "category4": "Desplegar un Contrato",
+    "category5": "Actualizar Variables de TimeLock",
+    "category6": "Actualizar Variables de Gobernador",
+    "propose": "Proponer",
+    "select": "Seleccionar una categoría",
+    "amount": "Cantidad",
+    "description": "Descripción",
+    "bytescode": "Códigos de Bytes",
+    "gracePeriod": "Período de Gracia - Segundos",
+    "min_delay": "Retraso Mínimo - Segundos",
+    "max_delay": "Retraso Máximo - Segundos",
+    "quorum_votes": "Votos de Quórum - 1000 Tokens",
+    "proposal_threshold": "Umbral de Propuesta - 10000 Tokens",
+    "proposal_maxOperations": "Máximo de Operaciones de Propuesta - 10 Operaciones"
+  },
+  "vote": {
+    "close": "Propuesta Cerrada",
+    "pending": "Propuestas Pendientes",
+    "submit": "Enviar Propuestas",
+    "delegate": "Delegar Votos",
+    "propose": "Proponer",
+    "select": "Seleccionar una categoría",
+    "amount": "Cantidad",
+    "description": "Descripción"
+  },
+  "token": {
+    "title": "Cartera de Tokens",
+    "subtitle1": "Tu saldo actual de Tokens",
+    "subtitle2": "Factor Actual",
+    "createToken": "Crear Token",
+    "tokenAddress": "Dirección del Token",
+    "exchnageRate": "Tasa de Cambio",
+    "swapToLocal": "Intercambiar a Token Local",
+    "swapFromLocal": "Intercambiar desde Token Local",
+    "totalToken": "Tokens Totales",
+    "list": "Lista de tokens comunitarios",
+    "inputTokenInfo": "Ingrese la información del token",
+    "createTokenInfo": "Esta es la información para crear el token de la comunidad.",
+    "confirm": "Confirmar"
+  },
+  "bounty": {
+    "title": "Programa de Recompensas",
+    "description": "Este programa de recompensas está destinado a proporcionar recompensas a los contribuidores",
+    "contributorBounty": "Recompensa al Contribuidor",
+    "proposal": "Recompensa por Propuesta",
+    "addContributor": "Agregar Recompensa al Contribuidor",
+    "addProposal": "Agregar Recompensa por Propuesta",
+    "claimProposal": "Reclamar Recompensa por Propuesta",
+    "claimContributor": "Reclamar Recompensa al Contribuidor",
+    "contributor": "Contribuidor",
+    "contributorAddr": "Dirección del Contribuidor",
+    "totalAmount": "Cantidad Total",
+    "bountyAmount": "Cantidad de Recompensa",
+    "proposalID": "ID de la Propuesta",
+    "total": "Contribuidores Totales"
+  },
+  "pipBar": {
+    "title": "Propuestas de Mejora de PEACE COIN",
+    "all": "Todos",
+    "core": "Core",
+    "networking": "Redes",
+    "interface": "Interfaz",
+    "prc": "PRC",
+    "meta": "Meta",
+    "info": "Informativo"
+  },
+  "pending": {
+    "title": "Propuestas Pendientes",
+    "votingPower": "Poder de Votación"
+  },
+  "closed": {
+    "title": "Propuestas Cerradas"
+  },
+  "delegate": {
+    "title": "Delegar Poder de Votación",
+    "description": "Antes de votar, debes asignar tus derechos de votación a ti mismo o a un tercero. Ingresa la dirección de la cartera de Ethereum que recibirá los derechos de votación.",
+    "address": "Dirección",
+    "delegate": "Delegar",
+    "votingPower": "Poder de Votación"
+  },
+  "faq": {
+    "title": "Preguntas Frecuentes",
+    "q1": "¿Cómo delegar poder de votación?",
+    "q2": "¿Cómo proponer un PIP?",
+    "q3": "¿Cómo votar?",
+    "q4": "¿Cómo poner en cola una propuesta?",
+    "q5": "¿Cómo ejecutar una propuesta?",
+    "q6": "¿Cómo agregar recompensa a otra persona?",
+    "q7": "¿Cómo reclamar recompensas?"
+  },
+  "daofaq": {
+    "title": "DAO FAQ",
+    "q1": "1. Create DAO. Basic DAO Settings?",
+    "q2": "2. Create DAO. Main DAO Settings?",
+    "q3": "3. Propose. How to find DAOs?",
+    "q4": "4. Propose. How to find proposals?",
+    "q5": "5. Delegate. How to delegate voting power?"
+  }
+}
