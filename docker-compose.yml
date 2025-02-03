@@ -6,12 +6,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8545:8545"
-  dao-dashboard:
-    build:
-      context: ./dao-dashboard
-      dockerfile: Dockerfile
-    ports:
-      - "3010:3010"
+  # dao-dashboard:
+  #   build:
+  #     context: ./dao-dashboard
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3010:3010"
   graph-node:
     image: graphprotocol/graph-node
     ports:
