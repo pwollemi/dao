@@ -15,10 +15,10 @@ RUN curl -L https://foundry.paradigm.xyz | bash && \
 ENV PATH="/root/.foundry/bin:${PATH}"
 
 RUN foundryup
-WORKDIR /dao-smartcontract
-COPY . .
 
-RUN forge install
+WORKDIR /dao-smartcontract
+
+COPY . .
 
 RUN forge compile --via-ir
 
