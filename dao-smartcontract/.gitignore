@@ -14,5 +14,3 @@ node_modules/
 .DS_Store
 # Handle external dependencies
 package-lock.json
-
-.env
