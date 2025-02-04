@@ -12,6 +12,7 @@ RUN yarn codegen && yarn build
 
 COPY <<EOF /dao-subgraph/run.sh
 #!/bin/bash
+sleep 20
 yarn create-local & 
 wait
 yarn deploy-local
@@ -20,4 +21,4 @@ EOF
 
 RUN chmod +x /dao-subgraph/run.sh
 
-CMD ["/dao-subgraph/run.sh"]
+CMD ["sh", "-c", "/dao-subgraph/run.sh"]

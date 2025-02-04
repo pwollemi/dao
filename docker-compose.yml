@@ -1,11 +1,5 @@
 version: "3.8"
 services:
-  dao-smartcontract:
-    build:
-      context: ./dao-smartcontract
-      dockerfile: Dockerfile
-    ports:
-      - "8545:8545"
   # dao-dashboard:
   #   build:
   #     context: ./dao-dashboard
@@ -23,7 +17,6 @@ services:
     depends_on:
       - ipfs
       - postgres
-      - dao-smartcontract
     extra_hosts:
       - host.docker.internal:host-gateway
     environment:
@@ -39,7 +32,7 @@ services:
     ports:
       - "5001:5001"
     volumes:
-      - ./data/ipfs:/data/ipfs:Z
+      - ./dao-subgraph/data/ipfs:/data/ipfs:Z
   postgres:
     image: postgres
     ports:
@@ -60,7 +53,7 @@ services:
       PGDATA: "/var/lib/postgresql/data"
       POSTGRES_INITDB_ARGS: "-E UTF8 --locale=C"
     volumes:
-      - ./data/postgres:/var/lib/postgresql/data:Z
+      - ./dao-subgraph/data/postgres:/var/lib/postgresql/data:Z
   dao-subgraph:
     build:
       context: ./dao-subgraph
@@ -69,3 +62,14 @@ services:
       - graph-node
       - ipfs
       - postgres
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    network_mode: host
+  dao-smartcontract:
+    build:
+      context: ./dao-smartcontract
+      dockerfile: Dockerfile
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8545:8545"
