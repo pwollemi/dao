@@ -20,7 +20,8 @@ WORKDIR /dao-smartcontract
 
 COPY . .
 
-RUN forge install
+RUN bash -c '. .env'
+RUN git init && forge install
 
 RUN forge compile --via-ir
 
