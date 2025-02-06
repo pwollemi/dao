@@ -21,7 +21,17 @@ WORKDIR /dao-smartcontract
 COPY . .
 
 RUN bash -c '. .env'
-RUN git init && forge install
+
+RUN rm -rf .gitmodules && \
+    rm -rf lib/openzeppelin-contracts-upgradeable && \
+    rm -rf lib/openzeppelin-contracts && \
+    rm -rf lib/forge-std
+
+RUN git init
+RUN git submodule add https://github.com/OpenZeppelin/openzeppelin-contracts.git lib/openzeppelin-contracts
+RUN git submodule add https://github.com/OpenZeppelin/openzeppelin-contracts-upgradeable.git lib/openzeppelin-contracts-upgradeable
+RUN git submodule add https://github.com/foundry-rs/forge-std.git lib/forge-std
+
 
 RUN forge compile --via-ir
 

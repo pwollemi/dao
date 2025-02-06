@@ -27,6 +27,12 @@ services:
       ipfs: "ipfs:5001"
       ethereum: "mainnet:http://host.docker.internal:8545"
       GRAPH_LOG: info
+    healthcheck:
+      test: ["CMD", "nc", "-z", "localhost", "8000"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
   ipfs:
     image: ipfs/kubo:v0.17.0
     ports:
@@ -59,9 +65,8 @@ services:
       context: ./dao-subgraph
       dockerfile: Dockerfile
     depends_on:
-      - graph-node
-      - ipfs
-      - postgres
+      graph-node:
+        condition: service_healthy
     extra_hosts:
       - "host.docker.internal:host-gateway"
     network_mode: host
