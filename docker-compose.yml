@@ -31,7 +31,7 @@ services:
       test: ["CMD", "nc", "-z", "localhost", "8000"]
       interval: 15s
       timeout: 5s
-      retries: 3
+      retries: 0
       start_period: 5s
   ipfs:
     image: ipfs/kubo:v0.17.0
@@ -67,6 +67,10 @@ services:
     depends_on:
       graph-node:
         condition: service_healthy
+      postgres:
+        condition: service_started
+      ipfs:
+        condition: service_started
     extra_hosts:
       - "host.docker.internal:host-gateway"
     network_mode: host
