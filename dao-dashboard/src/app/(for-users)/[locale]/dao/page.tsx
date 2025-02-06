@@ -39,42 +39,33 @@ import { PagePropsWithLocale, Dictionary } from '~/i18n/types'
 import { formatEther, parseEther } from 'viem'
 import { PCE_ABI } from '~/app/ABIs/PCEToken'
 
-// import { ethers } from 'ethers'
-// import { provider } from '~/app/constants/constants'
+import { ethers } from 'ethers'
+import { Env } from '~/env'
+const abi = [
+  'event Transfer(address indexed from, address indexed to, uint256 value)',
+]
 
-// const contractAddress = '0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359'
-// const abi = [
-//   // ERC20 ABI fragment
-//   'event Transfer(address indexed from, address indexed to, uint256 value)',
-//   'function totalSupply() view returns (uint256)',
-// ]
-// const contract = new ethers.Contract(contractAddress, abi, provider)
+async function getHolders(chainId: number, tokenAddress: string) {
+  const provider = new ethers.JsonRpcProvider(
+    chainId === sepolia.id
+      ? Env.NEXT_PUBLIC_SEPOLIA_RPC_URL
+      : localhost.rpcUrls.default.http[0]
+  )
+  const contract = new ethers.Contract(tokenAddress, abi, provider)
+  const transferEvents = await contract.queryFilter('Transfer', 0, 'latest')
 
-// // Define your token contract's ABI and address
-// const tokenAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7'
-// const tokenABI = [
-//   'event Transfer(address indexed from, address indexed to, uint256 value)',
-//   'function balanceOf(address owner) view returns (uint256)',
-// ]
+  const balances = new Map<string, bigint>()
 
-// const listenForTransfers = () => {
-//   let holders: { [key: string]: number } = {}
-//   const contract = new ethers.Contract(tokenAddress, tokenABI, provider)
+  for (const event of transferEvents) {
+    const { from, to, value } = (event as any).args
+    if (from !== ethers.ZeroAddress) {
+      balances.set(from, (balances.get(from) || BigInt(0)) - value)
+    }
+    balances.set(to, (balances.get(to) || BigInt(0)) + value)
+  }
 
-//   contract.on('Transfer', (from: string, to: string, value: number) => {
-//     // Update balances for 'from' and 'to' addresses
-//     try {
-//       if (from && to && value) {
-//         holders[from] = (holders[from] || 0) - Number(value)
-//         holders[to] = (holders[to] || 0) + Number(value)
-//       }
-//     } catch (error) {
-//       console.error('Error updating holder balances:', error)
-//     }
-//   })
-
-//   return holders
-// }
+  return [...balances.entries()].filter(([_, balance]) => balance > 0)
+}
 
 type Dao = {
   id: string
@@ -88,6 +79,7 @@ type Dao = {
   telegram: string
   votes: number
   identicon: string
+  holders: number
 }
 
 type DaoMetadata = {
@@ -164,7 +156,7 @@ const DaoCard = ({
         value={dao.votes ? formatString(formatEther(BigInt(dao.votes))) : 0}
       />
       <StatItem label="TVL" value="$0" />
-      <StatItem label="Members" value="0" />
+      <StatItem label="Members" value={dao.holders ? dao.holders : 0} />
     </div>
   </div>
 )
@@ -353,8 +345,17 @@ export default function ForDAOPage({
               )
             }
 
+            const holders = await getHolders(
+              chainId === sepolia.id ? sepolia.id : localhost.id,
+              dao.governanceToken as string
+            )
             const identicon = await generateIdenteapot(dao.governor, '')
-            updatedDaos.push({ ...dao, votes, identicon })
+            updatedDaos.push({
+              ...dao,
+              votes,
+              identicon,
+              holders: holders.length,
+            })
           } catch (error) {
             const identicon = await generateIdenteapot(dao.governor, '')
             updatedDaos.push({ ...dao, votes: 0, identicon })
