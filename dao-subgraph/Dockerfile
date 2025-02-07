@@ -12,6 +12,7 @@ RUN yarn codegen && yarn build
 
 COPY <<EOF /dao-subgraph/run.sh
 #!/bin/bash
+sleep 30
 yarn create-local & 
 wait
 yarn deploy-local
