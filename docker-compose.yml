@@ -65,12 +65,6 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     network_mode: host
-    healthcheck:
-      test: ["CMD", "nc", "-z", "localhost", "8000"]
-      interval: 15s
-      timeout: 5s
-      retries: 0
-      start_period: 5s
   dao-smartcontract:
     build:
       context: ./dao-smartcontract
