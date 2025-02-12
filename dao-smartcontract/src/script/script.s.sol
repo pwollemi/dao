@@ -3,7 +3,6 @@ pragma solidity 0.8.26;
 
 import "forge-std/Script.sol";
 import "../mocks/MockERC20.sol";
-import "../PCEGovTokenTest.sol";
 import "../Bounty.sol";
 import "../Governance/GovernorAlpha.sol";
 import "../Governance/Timelock.sol";
@@ -24,22 +23,12 @@ contract script is Script {
         uint256 pceTokenAmount = 1000000e18;
         uint256 _bountyAmount = 0;
 
-        MockERC20 mockERC20 = new MockERC20(); // PCE Token
-        mockERC20.initialize();
-        mockERC20.mint(deployerAddress, pceTokenAmount);
-
-        PCEGovTokenTest pceGovToken = new PCEGovTokenTest();
-        pceGovToken.initialize();
-        pceGovToken.delegate(deployerAddress);
-
+        address PCE_TOKEN = 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82;
         Timelock timelock = new Timelock();
         GovernorAlpha gov = new GovernorAlpha();
 
         Bounty bounty = new Bounty(); // Deploy Bounty Contract
-        bounty.initialize(ERC20Upgradeable(address(mockERC20)), _bountyAmount, address(gov));
-
-        timelock.initialize(address(this), 10 minutes);
-        gov.initialize("PCE DAO", address(pceGovToken), address(timelock), 1, 86400, 100e18, 1000e18);
+        bounty.initialize(ERC20Upgradeable(PCE_TOKEN), _bountyAmount, address(gov));
 
         ContractFactory contractFactory = new ContractFactory(deployerAddress);
         DAOFactory daoFactory = new DAOFactory();
@@ -48,33 +37,7 @@ contract script is Script {
 
         daoFactory.setImplementation(address(timelock), address(gov), address(pceCommunityGovToken));
 
-        DAOFactory.SocialConfig memory socialConfig = DAOFactory.SocialConfig({
-            description: "PCE DAO",
-            website: "https://pce.com",
-            linkedin: "",
-            twitter: "",
-            telegram: ""
-        });
-
-        uint256 votingDelay = 1; // 1 block
-        uint256 votingPeriod = 100; // ~100 blocks
-        uint256 proposalThreshold = 100e18;
-        uint256 quorum = 1000e18;
-        uint256 timelockDelay = 100;
-
-        daoFactory.createDAO(
-            "PCE DAO",
-            socialConfig,
-            address(mockERC20),
-            votingDelay,
-            votingPeriod,
-            proposalThreshold,
-            quorum,
-            timelockDelay
-        );
-
-        console.log("PCE Token: ", address(mockERC20));
-        console.log("PCE Gov Token: ", address(pceGovToken));
+        console.log("PCE Token: ", PCE_TOKEN);
         console.log("Timelock: ", address(timelock));
         console.log("Governor: ", address(gov));
         console.log("Bounty: ", address(bounty));
