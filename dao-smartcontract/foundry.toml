@@ -7,6 +7,8 @@ libs = ["lib"]
 
 [rpc_endpoints]
 armoy = "${AMOY_RPC_URL}"
+sepolia = "${SEPOLIA_RPC_URL}"
 
 [etherscan]
 armoy = { key = "${ETHERSCAN_API_KEY}" }
+sepolia = { key = "${ETHERSCAN_API_KEY}" }
