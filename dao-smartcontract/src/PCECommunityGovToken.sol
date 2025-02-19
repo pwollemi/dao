@@ -15,6 +15,8 @@ contract PCECommunityGovToken is OwnableUpgradeable, ERC20VotesUpgradeable {
     function initialize(address _communityToken) external initializer {
         communityToken = ERC20Upgradeable(_communityToken);
 
+        __ERC20_init("Community Governance Token", "COM_GOV");
+        __ERC20Votes_init();
         __Ownable_init(msg.sender);
     }
 

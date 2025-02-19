@@ -23,7 +23,7 @@ contract script is Script {
         uint256 pceTokenAmount = 1000000e18;
         uint256 _bountyAmount = 0;
 
-        address PCE_TOKEN = 0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82;
+        address PCE_TOKEN = 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9;
         Timelock timelock = new Timelock();
         GovernorAlpha gov = new GovernorAlpha();
 

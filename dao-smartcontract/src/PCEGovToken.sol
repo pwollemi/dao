@@ -12,6 +12,7 @@ contract PCEGovToken is ERC20VotesUpgradeable, OwnableUpgradeable {
     function initialize(address _owner, address _pceToken) public initializer {
         pceToken = _pceToken;
         __ERC20_init("PEACE COIN Governance", "PCEGOV");
+        __ERC20Votes_init();
         __Ownable_init_unchained(_owner);
     }
 
