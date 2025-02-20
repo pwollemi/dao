@@ -6,6 +6,14 @@ services:
   #     dockerfile: Dockerfile
   #   ports:
   #     - "3010:3010"
+  v1-core:
+    build:
+      context: ./v1-core
+      dockerfile: Dockerfile
+    extra_hosts:
+      - "v1-core:host-gateway"
+    ports:
+      - "8545:8545"
   graph-node:
     image: graphprotocol/graph-node
     ports:
@@ -34,7 +42,7 @@ services:
     volumes:
       - ./dao-subgraph/data/ipfs:/data/ipfs:Z
   postgres:
-    image: postgres
+    image: postgres:16
     ports:
       - "5432:5432"
     command:
@@ -69,7 +77,5 @@ services:
     build:
       context: ./dao-smartcontract
       dockerfile: Dockerfile
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports:
-      - "8545:8545"
+    depends_on:
+      - v1-core
