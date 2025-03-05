@@ -42,7 +42,7 @@ services:
     volumes:
       - ./dao-subgraph/data/ipfs:/data/ipfs:Z
   postgres:
-    image: postgres
+    image: postgres:16
     ports:
       - "5432:5432"
     command:
