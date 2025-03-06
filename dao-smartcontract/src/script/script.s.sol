@@ -18,7 +18,6 @@ contract script is Script {
         address deployerAddress = vm.addr(deployerPrivateKey);
         vm.startBroadcast(deployerPrivateKey);
 
-        address alice = address(0xABCD);
 
         uint256 pceTokenAmount = 1000000e18;
         uint256 _bountyAmount = 0;
@@ -37,11 +36,25 @@ contract script is Script {
 
         daoFactory.setImplementation(address(timelock), address(gov), address(pceCommunityGovToken));
 
+        pceCommunityGovToken.initialize(PCE_TOKEN);
+
+        timelock.initialize(deployerAddress, 1 minutes);
+
+        string memory daoName = "PCE DAO";
+        uint256 _votingDelay = 1;
+        uint256 _votingPeriod = 3; // 3 blocks
+        uint256 _proposalThreshold = 1000e18;
+        uint256 _quorumVotes = 2000e18;
+        gov.initialize(daoName, address(pceCommunityGovToken), address(timelock), _votingDelay, _votingPeriod, _proposalThreshold, _quorumVotes);
+        timelock.setPendingAdmin(address(gov));
+        gov.__acceptAdmin();
+
         console.log("PCE Token: ", PCE_TOKEN);
         console.log("Timelock: ", address(timelock));
         console.log("Governor: ", address(gov));
         console.log("Bounty: ", address(bounty));
         console.log("ContractFactory: ", address(contractFactory));
         console.log("DAOFactory: ", address(daoFactory));
+        console.log("PCE Community Gov Token: ", address(pceCommunityGovToken));
     }
 }
