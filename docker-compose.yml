@@ -6,12 +6,12 @@ services:
   #     dockerfile: Dockerfile
   #   ports:
   #     - "3010:3010"
-  v1-core:
+  core:
     build:
-      context: ./v1-core
+      context: ./core
       dockerfile: Dockerfile
     extra_hosts:
-      - "v1-core:host-gateway"
+      - "core:host-gateway"
     ports:
       - "8545:8545"
   graph-node:
@@ -78,4 +78,4 @@ services:
       context: ./dao-smartcontract
       dockerfile: Dockerfile
     depends_on:
-      - v1-core
+      - core
