@@ -35,4 +35,4 @@ RUN git submodule add https://github.com/foundry-rs/forge-std.git lib/forge-std
 
 RUN forge compile --via-ir
 
-CMD ["sh", "-c", "sleep 20 && forge script src/script/script.s.sol:script --fork-url http://core:8545 --broadcast --via-ir"]
+CMD ["sh", "-c", "sleep 30 && forge script src/script/script.s.sol:script --fork-url http://core:8545 --broadcast --via-ir"]
