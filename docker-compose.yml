@@ -8,7 +8,7 @@ services:
   #     - "3010:3010"
   core:
     build:
-      context: ./core
+      context: ./
       dockerfile: Dockerfile
     extra_hosts:
       - "core:host-gateway"
