@@ -46,7 +46,7 @@ contract BountyTest is Test {
         token.approve(address(bounty), type(uint256).max);
     }
 
-    function test_Initialize() public {
+    function test_Initialize() public view {
         assertEq(address(bounty.bountyToken()), address(token));
         assertEq(bounty.bountyAmount(), BOUNTY_AMOUNT);
         assertEq(bounty.governance(), address(governance));
@@ -69,7 +69,12 @@ contract BountyTest is Test {
         assertFalse(bounty.isContributor(user1));
     }
 
-    function test_AddProposalBounty() public {
+    function test_SetContributor_RevertWhen_AddressIsZero() public {
+        vm.expectRevert("Invalid contributor");
+        bounty.setContributor(address(0), true);
+    }
+
+    function test_AddProposalBounty_SucceededState() public {
         uint256 proposalId = 0;
         uint256 amount = 50e18;
 
@@ -83,6 +88,24 @@ contract BountyTest is Test {
 
         assertEq(bounty.proposalBounties(proposalId), amount);
         assertEq(token.balanceOf(address(bounty)), amount);
+        assertEq(token.balanceOf(user1), INITIAL_BALANCE - amount);
+    }
+
+    function test_AddProposalBounty_ExecutedState() public {
+        uint256 proposalId = 0;
+        uint256 amount = 50e18;
+
+        // Setup mock governance
+        governance.setProposalState(proposalId, uint8(7)); // Executed state
+
+        vm.prank(user1);
+        vm.expectEmit(true, true, true, true);
+        emit AddedProposalBounty(user1, proposalId, amount);
+        bounty.addProposalBounty(proposalId, amount);
+
+        assertEq(bounty.proposalBounties(proposalId), amount);
+        assertEq(token.balanceOf(address(bounty)), amount);
+        assertEq(token.balanceOf(user1), INITIAL_BALANCE - amount);
     }
 
     function test_AddContributorBounty() public {
@@ -97,50 +120,69 @@ contract BountyTest is Test {
         assertEq(bountyAmount, amount);
         assertEq(withdrawn, 0);
         assertEq(token.balanceOf(address(bounty)), amount);
+        assertEq(token.balanceOf(user1), INITIAL_BALANCE - amount);
+    }
+
+    function test_AddContributorBounty_RevertWhen_AddressIsZero() public {
+        uint256 amount = 50e18;
+        vm.expectRevert("Invalid contributor");
+        bounty.addContributorBounty(address(0), amount);
     }
 
     function test_ClaimProposalBounty() public {
         uint256 proposalId = 0;
         uint256 amount = 50e18;
+        uint256 userClaimableAmount = amount + BOUNTY_AMOUNT;
 
         // Setup proposal and bounty
-        governance.setProposalState(proposalId, uint8(4));
+        governance.setProposalState(proposalId, uint8(4)); // Succeeded state
         governance.setProposer(proposalId, user1);
 
         bounty.addProposalBounty(proposalId, amount);
+        uint256 bountyInitialBalance = token.balanceOf(address(bounty));
 
         // Claim bounty
         vm.prank(user1);
         vm.expectEmit(true, true, true, true);
-        emit ClaimedBounty(user1, amount + BOUNTY_AMOUNT);
+        emit ClaimedBounty(user1, userClaimableAmount);
         bounty.claimProposalBounty();
-
-        assertEq(token.balanceOf(user1), INITIAL_BALANCE + amount + BOUNTY_AMOUNT);
+        assertEq(token.balanceOf(address(bounty)), bountyInitialBalance - userClaimableAmount);
+        assertEq(token.balanceOf(user1), INITIAL_BALANCE + userClaimableAmount);
+        assertEq(bounty.proposalBountyWithdrawn(user1), userClaimableAmount);
     }
 
     function test_ClaimContributorBounty() public {
         uint256 amount = 50e18;
+        uint256 userClaimableAmount = amount + BOUNTY_AMOUNT;
 
         // Setup contributor and bounty
         bounty.setContributor(user1, true);
         token.approve(address(bounty), amount);
         bounty.addContributorBounty(user1, amount);
 
+        uint256 bountyInitialBalance = token.balanceOf(address(bounty));
+
         // Claim bounty
         vm.prank(user1);
         vm.expectEmit(true, true, true, true);
-        emit ClaimedBounty(user1, amount + BOUNTY_AMOUNT);
+        emit ClaimedBounty(user1, userClaimableAmount);
         bounty.claimContributorBounty();
 
-        assertEq(token.balanceOf(user1), INITIAL_BALANCE + amount + BOUNTY_AMOUNT);
+        assertEq(token.balanceOf(user1), INITIAL_BALANCE + userClaimableAmount);
+        assertEq(token.balanceOf(address(bounty)), bountyInitialBalance - userClaimableAmount);
+        (, uint256 withdrawn) = bounty.contributorBounties(user1);
+        assertEq(withdrawn, userClaimableAmount);
     }
 
     function test_RecoverERC20() public {
         uint256 amount = 50e18;
         token.transfer(address(bounty), amount);
 
+        uint256 initialOwnerBalance = token.balanceOf(owner);
+
         bounty.recoverERC20(token);
         assertEq(token.balanceOf(address(bounty)), 0);
+        assertEq(token.balanceOf(owner), initialOwnerBalance + amount);
     }
 
     function test_RevertWhen_NonOwnerSetsContributor() public {
@@ -159,7 +201,7 @@ contract BountyTest is Test {
         uint256 proposalId = 0;
         uint256 amount = 50e18;
 
-        // Set proposal state to something other than Succeeded (4)
+        // Set proposal state to something other than Succeeded (4) and Executed(7)
         governance.setProposalState(proposalId, uint8(3)); // Pending state
 
         vm.prank(user1);
@@ -216,6 +258,51 @@ contract BountyTest is Test {
         (bountyAmount, withdrawn) = bounty.contributorBounties(user1);
         assertEq(withdrawn, amount1 + amount2);
         assertEq(token.balanceOf(user1), INITIAL_BALANCE + amount1 + amount2 + BOUNTY_AMOUNT);
+    }
+
+    function test_claimableProposalAmount(uint256 bountyAmount, uint256 proposalAmount) public {
+        bountyAmount = bound(bountyAmount, 1e18, 5e18);
+        proposalAmount = bound(proposalAmount, 30e18, INITIAL_BALANCE / 4);
+        bounty.setBountyAmount(bountyAmount);
+
+        uint256 proposalId0 = 0;
+        uint256 proposalId1 = 1;
+        uint256 proposalId2 = 2;
+
+        // Setup proposal and bounty
+        governance.setProposalState(proposalId0, uint8(4)); // Succeeded state
+        governance.setProposalState(proposalId1, uint8(4)); // Succeeded state
+        governance.setProposalState(proposalId2, uint8(4)); // Succeeded state
+        governance.setProposer(proposalId0, user1);
+        governance.setProposer(proposalId1, user1);
+        governance.setProposer(proposalId2, user2); // Another user
+
+        bounty.addProposalBounty(proposalId0, proposalAmount);
+        bounty.addProposalBounty(proposalId1, proposalAmount);
+        bounty.addProposalBounty(proposalId2, proposalAmount);
+        assertEq(bounty.claimableProposalAmount(user1), proposalAmount * 2 + bountyAmount * 2);
+
+        // Claim all bounties
+        vm.prank(user1);
+        bounty.claimProposalBounty();
+        assertEq(bounty.claimableProposalAmount(user1), 0);
+    }
+
+    function test_claimableContributorAmount(uint256 bountyAmount, uint256 contributionAmount) public {
+        bountyAmount = bound(bountyAmount, 1e18, 5e18);
+        contributionAmount = bound(contributionAmount, 30e18, 50e18);
+        bounty.setBountyAmount(bountyAmount);
+
+        bounty.setContributor(user1, true);
+        bounty.addContributorBounty(user1, contributionAmount);
+
+        uint256 claimableAmountUser1 = bounty.claimableContributorAmount(user1);
+        assertEq(claimableAmountUser1, contributionAmount + bountyAmount);
+
+        // Not a contributor
+        bounty.addContributorBounty(user2, contributionAmount);
+        uint256 claimableAmountUser2 = bounty.claimableContributorAmount(user2);
+        assertEq(claimableAmountUser2, contributionAmount); // No bounty
     }
 
     function test_RevertWhen_NonOwnerRecoversERC20() public {
