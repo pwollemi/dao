@@ -106,7 +106,7 @@ contract Bounty is Initializable, OwnableUpgradeable {
 
     function claimableContributorAmount(address user) public view returns (uint256) {
         uint256 extraAmount = isContributor[user] ? bountyAmount : 0;
-        BountyInfo storage bounty = contributorBounties[msg.sender];
+        BountyInfo storage bounty = contributorBounties[user];
         uint256 claimable = bounty.bountyAmount + extraAmount - bounty.withdrawn;
         return claimable;
     }
