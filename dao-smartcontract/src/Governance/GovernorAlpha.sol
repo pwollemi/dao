@@ -191,7 +191,7 @@ contract GovernorAlpha {
     }
 
     function batchQueue(uint256[] calldata proposalIds) public {
-        for (uint256 id = 0; id <= proposalIds.length; id++) {
+        for (uint256 id = 0; id < proposalIds.length; id++) {
             require(
                 state(proposalIds[id]) == ProposalState.Succeeded,
                 "GovernorAlpha::queue: proposal can only be queued if it is succeeded"
@@ -233,7 +233,7 @@ contract GovernorAlpha {
     }
 
     function batchExecute(uint256[] calldata proposalIds) public payable {
-        for (uint256 id = 0; id <= proposalIds.length; id++) {
+        for (uint256 id = 0; id < proposalIds.length; id++) {
             require(
                 state(proposalIds[id]) == ProposalState.Queued,
                 "GovernorAlpha::execute: proposal can only be executed if it is queued"
