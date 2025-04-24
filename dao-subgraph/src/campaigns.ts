@@ -1,14 +1,14 @@
 import {
   CampWinnersAdded as CampWinnersAddedEvent,
   CampWinnersClaimed as CampWinnersClaimedEvent,
-  CampaginCreated as CampaginCreatedEvent,
+  CampaignCreated as CampaignCreatedEvent,
   Initialized as InitializedEvent,
   OwnershipTransferred as OwnershipTransferredEvent
-} from "../generated/Campagins/Campagins"
+} from "../generated/Campaigns/Campaigns"
 import {
   CampWinnersAdded,
   CampWinnersClaimed,
-  CampaginCreated,
+  CampaignCreated,
   Initialized,
   OwnershipTransferred
 } from "../generated/schema"
@@ -18,7 +18,7 @@ export function handleCampWinnersAdded(event: CampWinnersAddedEvent): void {
   let entity = new CampWinnersAdded(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
-  entity.campaginId = event.params.campaginId
+  entity.campaignId = event.params.campaignId
   entity.winners = changetype<Bytes[]>(event.params.winners)
 
   entity.blockNumber = event.block.number
@@ -32,7 +32,7 @@ export function handleCampWinnersClaimed(event: CampWinnersClaimedEvent): void {
   let entity = new CampWinnersClaimed(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
-  entity.campaginId = event.params.campaginId
+  entity.campaignId = event.params.campaignId
   entity.winner = event.params.winner
 
   entity.blockNumber = event.block.number
@@ -42,17 +42,18 @@ export function handleCampWinnersClaimed(event: CampWinnersClaimedEvent): void {
   entity.save()
 }
 
-export function handleCampaginCreated(event: CampaginCreatedEvent): void {
-  let entity = new CampaginCreated(
+export function handleCampaignCreated(event: CampaignCreatedEvent): void {
+  let entity = new CampaignCreated(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
-  entity.campaginId = event.params.campaginId
+  entity.campaignId = event.params.campaignId
   entity.title = event.params.title
   entity.description = event.params.description
   entity.amount = event.params.amount
   entity.startDate = event.params.startDate
   entity.endDate = event.params.endDate
   entity.validateSignatures = event.params.validateSignatures
+  entity.isNFT = event.params.isNFT
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp

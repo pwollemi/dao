@@ -1,6 +1,6 @@
 type CampWinnersAdded @entity(immutable: true) {
   id: Bytes!
-  campaginId: BigInt! # uint256
+  campaignId: BigInt! # uint256
   winners: [Bytes!]! # address[]
   blockNumber: BigInt!
   blockTimestamp: BigInt!
@@ -9,22 +9,23 @@ type CampWinnersAdded @entity(immutable: true) {
 
 type CampWinnersClaimed @entity(immutable: true) {
   id: Bytes!
-  campaginId: BigInt! # uint256
+  campaignId: BigInt! # uint256
   winner: Bytes! # address
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
 
-type CampaginCreated @entity(immutable: true) {
+type CampaignCreated @entity(immutable: true) {
   id: Bytes!
-  campaginId: BigInt! # uint256
+  campaignId: BigInt! # uint256
   title: String! # string
   description: String! # string
   amount: BigInt! # uint256
   startDate: BigInt! # uint256
   endDate: BigInt! # uint256
   validateSignatures: Boolean! # bool
+  isNFT: Boolean! # bool
   blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!

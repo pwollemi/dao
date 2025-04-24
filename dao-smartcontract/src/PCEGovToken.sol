@@ -18,7 +18,10 @@ contract PCEGovToken is ERC20VotesUpgradeable, OwnableUpgradeable {
 
     function claimGovernanceTokens(address _communityToken) external {
         require(!isCommunityTokenClaimed[_communityToken], "Community token already claimed");
-        require(IPCEToken(_communityToken).owner() == msg.sender, "Community token not owned by sender");
+        require(
+            IPCEToken(_communityToken).owner() == msg.sender,
+            "Community token not owned by sender"
+        );
 
         IPCEToken.LocalToken memory localToken = IPCEToken(pceToken).getLocalToken(_communityToken);
 

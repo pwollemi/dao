@@ -56,11 +56,30 @@ contract ContractFactoryTest is Test {
         contractFactory.deploy(bytes("Invalid EVM bytecode"));
     }
 
-    function getBytecodeWithConstructorArgs(bytes memory _bytecode, bytes memory _constructorArgs)
-        public
-        pure
-        returns (bytes memory)
-    {
+    function testDeploy_EmitsEventWithAddress() public {
+        // We check the logs instead of using vm.expectEmit because we need the newly created address
+        vm.recordLogs();
+
+        vm.prank(alice);
+        address deployedAddress = contractFactory.deploy(getBytecodeWithConstructorArgs(bytecode, _arguments));
+
+        Vm.Log[] memory logs = vm.getRecordedLogs();
+        bytes32 eventSignature = logs[0].topics[0];
+        address contractAddressFromLog = abi.decode(logs[0].data, (address));
+        assertEq(eventSignature, ContractDeployed.selector);
+        assertEq(contractAddressFromLog, deployedAddress);
+    }
+
+    function testDeploy_Reverts_WhenByteCodeIsInvalid() public {
+        vm.prank(alice);
+        vm.expectRevert("Contract deployment failed");
+        contractFactory.deploy(bytes("Invalid EVM bytecode"));
+    }
+
+    function getBytecodeWithConstructorArgs(
+        bytes memory _bytecode,
+        bytes memory _constructorArgs
+    ) public pure returns (bytes memory) {
         return abi.encodePacked(_bytecode, _constructorArgs);
     }
 }

@@ -116,10 +116,22 @@ contract GovernorAlphaTest is Test {
         gov.propose(targets, values, signatures, inv_data, description);
 
         vm.expectRevert("GovernorAlpha::propose: must provide actions");
-        gov.propose(new address[](0), new uint256[](0), new string[](0), new bytes[](0), description);
+        gov.propose(
+            new address[](0),
+            new uint256[](0),
+            new string[](0),
+            new bytes[](0),
+            description
+        );
 
         vm.expectRevert("GovernorAlpha::propose: too many actions");
-        gov.propose(new address[](11), new uint256[](11), new string[](11), new bytes[](11), description);
+        gov.propose(
+            new address[](11),
+            new uint256[](11),
+            new string[](11),
+            new bytes[](11),
+            description
+        );
 
         // Create Proposal
         vm.expectEmit(true, true, true, true);
@@ -140,7 +152,9 @@ contract GovernorAlphaTest is Test {
         assertEq(gov.latestProposalIds(address(this)), 1);
 
         // Can't create new proposal if user has active/pending proposal
-        vm.expectRevert("GovernorAlpha::propose: one live proposal per proposer, found an already pending proposal");
+        vm.expectRevert(
+            "GovernorAlpha::propose: one live proposal per proposer, found an already pending proposal"
+        );
         gov.propose(targets, values, signatures, data, description);
     }
 

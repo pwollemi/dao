@@ -9,8 +9,8 @@ import "../Governance/Timelock.sol";
 import "../ContractFactory.sol";
 import "../DAOFactory.sol";
 import "../PCECommunityGovToken.sol";
-import "../Campagins.sol";
-
+import "../Campaigns.sol";
+import "../SBT.sol";
 import {console} from "forge-std/console.sol";
 
 contract script is Script {
@@ -35,7 +35,11 @@ contract script is Script {
 
         PCECommunityGovToken pceCommunityGovToken = new PCECommunityGovToken();
 
-        daoFactory.setImplementation(address(timelock), address(gov), address(pceCommunityGovToken));
+        daoFactory.setImplementation(
+            address(timelock),
+            address(gov),
+            address(pceCommunityGovToken)
+        );
 
         pceCommunityGovToken.initialize(PCE_TOKEN);
 
@@ -48,44 +52,72 @@ contract script is Script {
         uint256 _votingPeriod = 3; // 3 blocks
         uint256 _proposalThreshold = 1000e18;
         uint256 _quorumVotes = 2000e18;
-        gov.initialize(daoName, address(pceCommunityGovToken), address(timelock), _votingDelay, _votingPeriod, _proposalThreshold, _quorumVotes);
+        gov.initialize(
+            daoName,
+            address(pceCommunityGovToken),
+            address(timelock),
+            _votingDelay,
+            _votingPeriod,
+            _proposalThreshold,
+            _quorumVotes
+        );
         timelock.setPendingAdmin(address(gov));
         gov.__acceptAdmin();
 
         vm.roll(block.number + 1); // Wait for 1 block
 
-        Campagins campagins = new Campagins();
-        campagins.initialize(ERC20Upgradeable(PCE_TOKEN));
+        Campaigns campaigns = new Campaigns();
+        SBT sbt = new SBT();
+        sbt.setMinter(address(campaigns));
 
-        ERC20Upgradeable(PCE_TOKEN).transfer(address(campagins), 10000e18);
+        campaigns.initialize(
+            ERC20Upgradeable(PCE_TOKEN),
+            sbt
+        );
 
-        Campagins.Campagin memory campagin = Campagins.Campagin({
+        ERC20Upgradeable(PCE_TOKEN).transfer(address(campaigns), 10000e18);
+
+        Campaigns.Campaign memory campaign = Campaigns.Campaign({
             title: "Airdrop Announcement: PCE Tokens for Top 10 Holders",
             description: "The Peace Coin Foundation is pleased to announce an exclusive airdrop of PCE tokens to the top 10 PCE token holders. A snapshot of eligible wallets will be taken on February 25, 2025. Stay tuned for more details and ensure your holdings are up to date!",
             startDate: block.timestamp + 100,
             endDate: block.timestamp + 3000,
             amount: 10e18,
-            validateSignatures: false
+            validateSignatures: false,
+            isNFT: false
         });
 
-        campagins.createCampagin(campagin);
+        campaigns.createCampaign(campaign);
         vm.roll(block.number + 1); // Wait for 1 block
 
-        campagins.createCampagin(campagin);
-        campagins.createCampagin(campagin);
-        
-        campagin.validateSignatures = true;
-        campagins.createCampagin(campagin);
+        campaigns.createCampaign(campaign);
+        campaigns.createCampaign(campaign);
+
+        campaign.validateSignatures = true;
+        campaigns.createCampaign(campaign);
         vm.roll(block.number + 1); // Wait for 1 block
 
         address[] memory winners = new address[](1);
         winners[0] = deployerAddress;
 
-        campagins.addCampWinners(0, winners);
-        campagins.addCampWinners(1, winners);
-        campagins.addCampWinners(3, winners);
+        bytes32[] memory gist = new bytes32[](1);
+        gist[0] = keccak256(abi.encodePacked("pwollemi"));
+
+        campaigns.addCampWinners(0, winners, gist);
+        campaigns.addCampWinners(1, winners, gist);
+        campaigns.addCampWinners(3, new address[](0), gist);
         vm.roll(block.number + 1); // Wait for 1 block
 
+        campaign.isNFT = true;
+        campaigns.createCampaign(campaign);
+        vm.roll(block.number + 1); // Wait for 1 block
+
+        campaigns.addCampWinners(4, winners, gist);
+
+        campaigns.createCampaign(campaign);
+        campaigns.addCampWinners(5, winners, gist);
+
+        vm.roll(block.number + 1); // Wait for 1 block
 
         console.log("PCE Token: ", PCE_TOKEN);
         console.log("Timelock: ", address(timelock));
@@ -94,6 +126,7 @@ contract script is Script {
         console.log("ContractFactory: ", address(contractFactory));
         console.log("DAOFactory: ", address(daoFactory));
         console.log("PCE Community Gov Token: ", address(pceCommunityGovToken));
-        console.log("Campagins: ", address(campagins));
+        console.log("Campaigns: ", address(campaigns));
+        console.log("SBT: ", address(sbt));
     }
 }
