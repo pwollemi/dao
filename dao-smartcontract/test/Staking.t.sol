@@ -196,4 +196,19 @@ contract StakingTest is Test {
         vm.roll(STARTING_BLOCK + 3);
         assertEq(staking.rewardPerToken(), 0);
     }
+
+    // earned
+    function test_Earned() public {
+        vm.prank(USER_1);
+        staking.stake(STAKING_AMOUNT);
+
+        vm.roll(STARTING_BLOCK + 3);
+
+        assertEq(staking.earned(USER_1), (STAKING_AMOUNT * staking.rewardPerToken()) / DECIMALS_PRECISION);
+    }
+
+    function test_Earned_WhenNoStaked() public {
+        vm.roll(STARTING_BLOCK + 3);
+        assertEq(staking.earned(USER_1), 0);
+    }
 }
