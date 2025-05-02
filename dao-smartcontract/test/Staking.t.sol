@@ -245,4 +245,33 @@ contract StakingTest is Test {
         assertEq(staking.rewardTokensLocked(), REWARD_PER_BLOCK * BLOCKS_AMOUNT - expectedReward);
         assertEq(rewardsToken.balanceOf(address(staking)), stakingRewardsInitialBalance - expectedReward);
     }
+
+    // withdraw
+    function test_Withdraw() public {
+        vm.prank(USER_1);
+        staking.stake(STAKING_AMOUNT);
+
+        uint256 initialBalance = stakingToken.balanceOf(USER_1);
+        vm.prank(USER_1);
+        vm.expectEmit(true, false, false, true);
+        emit Withdrawn(USER_1, STAKING_AMOUNT);
+        staking.withdraw(STAKING_AMOUNT);
+
+        assertEq(staking.staked(USER_1), 0);
+        assertEq(staking.totalStaked(), 0);
+        assertEq(stakingToken.balanceOf(USER_1), initialBalance + STAKING_AMOUNT);
+        assertEq(stakingToken.balanceOf(address(staking)), 0);
+    }
+
+    function test_Withdraw_RevertsWhen_ZeroAmount() public {
+        vm.prank(USER_1);
+        vm.expectRevert("Amount should be greater then 0");
+        staking.withdraw(0);
+    }
+
+    function test_Withdraw_RevertsWhen_InsufficientStakedAmount() public {
+        vm.prank(USER_1);
+        vm.expectRevert("Insufficient staked amount");
+        staking.withdraw(STAKING_AMOUNT);
+    }
 }
