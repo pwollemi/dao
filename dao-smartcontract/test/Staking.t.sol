@@ -20,6 +20,7 @@ contract StakingTest is Test {
     uint256 public constant BLOCKS_AMOUNT = 100;
     uint256 public constant LAST_BLOCK_WITH_REWARD = STARTING_BLOCK + BLOCKS_AMOUNT - 1;
     uint256 public constant DECIMALS_PRECISION = 1e18;
+    uint256 public constant REWARDS_BLOCK = STARTING_BLOCK + 3;
 
     event RewardsSet(uint256 rewardPerBlock, uint256 firstBlockWithReward, uint256 lastBlockWithReward);
     event Staked(address indexed user, uint256 amount);
@@ -103,7 +104,6 @@ contract StakingTest is Test {
 
     // stake
     function test_Stake() public {
-        vm.roll(block.number + STARTING_BLOCK); // Do we need this validation?
         vm.prank(USER_1);
         vm.expectEmit(true, false, false, true);
         emit Staked(USER_1, STAKING_AMOUNT);
@@ -115,8 +115,21 @@ contract StakingTest is Test {
         assertEq(stakingToken.balanceOf(USER_1), INITIAL_BALANCE - STAKING_AMOUNT);
     }
 
+    function test_Stake_UpdateReward() public {
+        vm.roll(REWARDS_BLOCK);
+        vm.prank(USER_1);
+        staking.stake(STAKING_AMOUNT);
+
+        vm.roll(REWARDS_BLOCK + 1);
+        vm.prank(USER_1);
+        staking.stake(STAKING_AMOUNT);
+
+        vm.assertEq(staking.lastUpdateBlock(), REWARDS_BLOCK + 1);
+        vm.assertEq(staking.rewards(USER_1), staking.earned(USER_1));
+        vm.assertEq(staking.userRewardPerTokenPaid(USER_1), staking.rewardPerTokenStored());
+    }
+
     function test_Stake_RevertsWhen_ZeroAmount() public {
-        vm.roll(block.number + STARTING_BLOCK);
         vm.prank(USER_1);
         vm.expectRevert("Stake: can't stake 0");
         staking.stake(0);
@@ -169,7 +182,7 @@ contract StakingTest is Test {
         // lastUpdateBlock is before the first block with rewards
         // Current block is after the first block with rewards
         uint256 passed = 3;
-        vm.roll(STARTING_BLOCK + 3);
+        vm.roll(REWARDS_BLOCK);
 
         assertEq(staking.blocksWithRewardsPassed(), passed);
     }
@@ -193,7 +206,7 @@ contract StakingTest is Test {
     }
 
     function test_RewardsPerToken_WhenNoStaked() public {
-        vm.roll(STARTING_BLOCK + 3);
+        vm.roll(REWARDS_BLOCK);
         assertEq(staking.rewardPerToken(), 0);
     }
 
@@ -202,13 +215,34 @@ contract StakingTest is Test {
         vm.prank(USER_1);
         staking.stake(STAKING_AMOUNT);
 
-        vm.roll(STARTING_BLOCK + 3);
+        vm.roll(REWARDS_BLOCK);
 
         assertEq(staking.earned(USER_1), (STAKING_AMOUNT * staking.rewardPerToken()) / DECIMALS_PRECISION);
     }
 
     function test_Earned_WhenNoStaked() public {
-        vm.roll(STARTING_BLOCK + 3);
+        vm.roll(REWARDS_BLOCK);
         assertEq(staking.earned(USER_1), 0);
+    }
+
+    // getReward
+    function test_GetReward() public {
+        vm.prank(USER_1);
+        staking.stake(STAKING_AMOUNT);
+
+        vm.roll(REWARDS_BLOCK);
+
+        uint256 expectedReward = staking.earned(USER_1);
+        uint256 stakingRewardsInitialBalance = rewardsToken.balanceOf(address(staking));
+
+        vm.prank(USER_1);
+        vm.expectEmit(true, false, false, true);
+        emit RewardPaid(USER_1, expectedReward);
+        staking.getReward();
+
+        assertEq(staking.rewards(USER_1), 0);
+        assertEq(rewardsToken.balanceOf(USER_1), expectedReward);
+        assertEq(staking.rewardTokensLocked(), REWARD_PER_BLOCK * BLOCKS_AMOUNT - expectedReward);
+        assertEq(rewardsToken.balanceOf(address(staking)), stakingRewardsInitialBalance - expectedReward);
     }
 }
