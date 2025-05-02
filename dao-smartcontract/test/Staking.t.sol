@@ -6,6 +6,16 @@ import {Staking} from "src/Staking.sol";
 import {MockERC20} from "src/mocks/MockERC20.sol";
 import {IStaking} from "src/interfaces/IStaking.sol";
 
+contract TesteableStaking is Staking {
+    function _getFutureRewardTokensPublic() external view returns (uint256) {
+        return super._getFutureRewardTokens();
+    }
+
+    function _calculateBlocksLeftPublic() external view returns (uint256) {
+        return super._calculateBlocksLeft();
+    }
+}
+
 contract StakingTest is Test {
     Staking public staking;
     MockERC20 public stakingToken;
@@ -374,5 +384,53 @@ contract StakingTest is Test {
 
         vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", address(this)));
         staking.unpause();
+    }
+
+    // _getFutureRewardTokens
+    function test_getFutureRewardTokens() public {
+        TesteableStaking testStaking = new TesteableStaking();
+        testStaking.initialize(address(stakingToken), address(rewardsToken), OWNER);
+        rewardsToken.mint(address(testStaking), REWARD_PER_BLOCK * BLOCKS_AMOUNT);
+
+        vm.prank(OWNER);
+        testStaking.setRewards(REWARD_PER_BLOCK, STARTING_BLOCK, BLOCKS_AMOUNT);
+
+        assertEq(testStaking._getFutureRewardTokensPublic(), REWARD_PER_BLOCK * BLOCKS_AMOUNT);
+    }
+
+    // _calculateBlocksLeft
+    function test_CalculateBlocksLeft_StakingNotStarted() public {
+        TesteableStaking testStaking = new TesteableStaking();
+        testStaking.initialize(address(stakingToken), address(rewardsToken), OWNER);
+        rewardsToken.mint(address(testStaking), REWARD_PER_BLOCK * BLOCKS_AMOUNT);
+
+        vm.prank(OWNER);
+        testStaking.setRewards(REWARD_PER_BLOCK, STARTING_BLOCK, BLOCKS_AMOUNT);
+
+        assertEq(testStaking._calculateBlocksLeftPublic(), BLOCKS_AMOUNT);
+    }
+
+    function test_CalculateBlocksLeft_RevertsWhen_StakingPeriodIsOver() public {
+        TesteableStaking testStaking = new TesteableStaking();
+        testStaking.initialize(address(stakingToken), address(rewardsToken), OWNER);
+        rewardsToken.mint(address(testStaking), REWARD_PER_BLOCK * BLOCKS_AMOUNT);
+
+        vm.prank(OWNER);
+        testStaking.setRewards(REWARD_PER_BLOCK, STARTING_BLOCK, BLOCKS_AMOUNT);
+
+        vm.roll(LAST_BLOCK_WITH_REWARD);
+        assertEq(testStaking._calculateBlocksLeftPublic(), 0);
+    }
+
+    function test_CalculateBlocksLeft_RevertsWhen_StakingPeriodNotEnded() public {
+        TesteableStaking testStaking = new TesteableStaking();
+        testStaking.initialize(address(stakingToken), address(rewardsToken), OWNER);
+        rewardsToken.mint(address(testStaking), REWARD_PER_BLOCK * BLOCKS_AMOUNT);
+
+        vm.prank(OWNER);
+        testStaking.setRewards(REWARD_PER_BLOCK, STARTING_BLOCK, BLOCKS_AMOUNT);
+
+        vm.roll(REWARDS_BLOCK);
+        assertEq(testStaking._calculateBlocksLeftPublic(), LAST_BLOCK_WITH_REWARD - REWARDS_BLOCK);
     }
 }
