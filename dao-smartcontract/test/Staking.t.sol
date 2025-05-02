@@ -18,6 +18,7 @@ contract StakingTest is Test {
     uint256 public constant REWARD_PER_BLOCK = 1e8;
     uint256 public constant STARTING_BLOCK = 10;
     uint256 public constant BLOCKS_AMOUNT = 100;
+    uint256 public constant LAST_BLOCK_WITH_REWARD = STARTING_BLOCK + BLOCKS_AMOUNT - 1;
 
     event RewardsSet(uint256 rewardPerBlock, uint256 firstBlockWithReward, uint256 lastBlockWithReward);
     event Staked(address indexed user, uint256 amount);
@@ -121,9 +122,54 @@ contract StakingTest is Test {
     }
 
     function test_Stake_RevertsWhen_StakingPeriodIsOver() public {
-        vm.roll(block.number + STARTING_BLOCK + BLOCKS_AMOUNT);
+        vm.roll(LAST_BLOCK_WITH_REWARD + 1);
         vm.prank(USER_1);
         vm.expectRevert("Stake: staking  period is over");
         staking.stake(STAKING_AMOUNT);
+    }
+
+    // blocksWithRewardsPassed
+    function test_BlocksWithRewardsPassed_BeforeStakingStart() public view {
+        // Current block is before the first block with rewards
+        assertEq(staking.blocksWithRewardsPassed(), 0);
+    }
+
+    function test_BlocksWithRewardsPassed_StakingFinished() public {
+        // Current block and lastUpdateBlock are after the last block with rewards
+        vm.roll(LAST_BLOCK_WITH_REWARD + 1);
+        vm.prank(USER_1);
+        staking.getReward(); // This will update the lastUpdateBlock to the current block
+
+        assertEq(staking.blocksWithRewardsPassed(), 0);
+    }
+
+    function test_BlocksWithRewardsPassed_DuringRewardPeriod() public {
+        // Current block and lastUpdateBlock are before the last block with rewards
+        uint256 passed = 3;
+        vm.roll(STARTING_BLOCK + passed);
+        vm.prank(USER_1);
+
+        assertEq(staking.blocksWithRewardsPassed(), passed);
+    }
+
+    function test_BlocksWithRewardsPassed_AfterStaking_LastUpdateDuringStaking() public {
+        // 3 blocks passed since last update, but current block is after the last block with rewards
+        uint256 passedSinceLastUpdate = 3;
+        vm.roll(STARTING_BLOCK + passedSinceLastUpdate);
+        vm.prank(USER_1);
+        staking.getReward();
+
+        vm.roll(LAST_BLOCK_WITH_REWARD + 1);
+
+        assertEq(staking.blocksWithRewardsPassed(), LAST_BLOCK_WITH_REWARD - (STARTING_BLOCK + passedSinceLastUpdate));
+    }
+
+    function test_BlocksWithRewardsPassed_StartsAfterFirstRewardBlock() public {
+        // lastUpdateBlock is before the first block with rewards
+        // Current block is after the first block with rewards
+        uint256 passed = 3;
+        vm.roll(STARTING_BLOCK + 3);
+
+        assertEq(staking.blocksWithRewardsPassed(), passed);
     }
 }
