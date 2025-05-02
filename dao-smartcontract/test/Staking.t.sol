@@ -14,11 +14,12 @@ contract StakingTest is Test {
     address public OWNER = makeAddr("OWNER");
     address public USER_1 = makeAddr("USER_1");
     uint256 public constant INITIAL_BALANCE = 1000e18;
-    uint256 public constant STAKING_AMOUNT = INITIAL_BALANCE / 2;
+    uint256 public constant STAKING_AMOUNT = INITIAL_BALANCE / 4;
     uint256 public constant REWARD_PER_BLOCK = 1e8;
     uint256 public constant STARTING_BLOCK = 10;
     uint256 public constant BLOCKS_AMOUNT = 100;
     uint256 public constant LAST_BLOCK_WITH_REWARD = STARTING_BLOCK + BLOCKS_AMOUNT - 1;
+    uint256 public constant DECIMALS_PRECISION = 1e18;
 
     event RewardsSet(uint256 rewardPerBlock, uint256 firstBlockWithReward, uint256 lastBlockWithReward);
     event Staked(address indexed user, uint256 amount);
@@ -45,7 +46,7 @@ contract StakingTest is Test {
         stakingToken.mint(USER_1, INITIAL_BALANCE);
 
         vm.prank(USER_1);
-        stakingToken.approve(address(staking), STAKING_AMOUNT);
+        stakingToken.approve(address(staking), INITIAL_BALANCE);
     }
 
     // initialize
@@ -140,7 +141,7 @@ contract StakingTest is Test {
         vm.prank(USER_1);
         staking.getReward(); // This will update the lastUpdateBlock to the current block
 
-        assertEq(staking.blocksWithRewardsPassed(), 0);
+        assertEq(staking.blocksWithRewardsPassed(), 0); // No rewards left
     }
 
     function test_BlocksWithRewardsPassed_DuringRewardPeriod() public {
@@ -164,12 +165,35 @@ contract StakingTest is Test {
         assertEq(staking.blocksWithRewardsPassed(), LAST_BLOCK_WITH_REWARD - (STARTING_BLOCK + passedSinceLastUpdate));
     }
 
-    function test_BlocksWithRewardsPassed_StartsAfterFirstRewardBlock() public {
+    function test_BlocksWithRewardsPassed_DuringRewards_LastUpdateBeforeStakingStarts() public {
         // lastUpdateBlock is before the first block with rewards
         // Current block is after the first block with rewards
         uint256 passed = 3;
         vm.roll(STARTING_BLOCK + 3);
 
         assertEq(staking.blocksWithRewardsPassed(), passed);
+    }
+
+    // rewardsPerToken
+    function test_RewardsPerToken() public {
+        vm.prank(USER_1);
+        staking.stake(STAKING_AMOUNT);
+
+        uint256 blockedPassed = 3;
+        vm.roll(STARTING_BLOCK + blockedPassed);
+
+        uint256 expectedRewardPerToken = (blockedPassed * REWARD_PER_BLOCK * DECIMALS_PRECISION) / STAKING_AMOUNT;
+        assertEq(staking.rewardPerToken(), expectedRewardPerToken);
+
+        vm.prank(USER_1);
+        staking.stake(STAKING_AMOUNT);
+
+        // Multiple calls to rewardPerToken in the same block returns rewardPerTokenStored
+        assertEq(staking.rewardPerToken(), expectedRewardPerToken);
+    }
+
+    function test_RewardsPerToken_WhenNoStaked() public {
+        vm.roll(STARTING_BLOCK + 3);
+        assertEq(staking.rewardPerToken(), 0);
     }
 }
