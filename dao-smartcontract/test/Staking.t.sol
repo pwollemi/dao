@@ -115,6 +115,15 @@ contract StakingTest is Test {
         assertEq(stakingToken.balanceOf(USER_1), INITIAL_BALANCE - STAKING_AMOUNT);
     }
 
+    function test_Stake_RevertsWhen_Paused() public {
+        vm.prank(OWNER);
+        staking.pause();
+
+        vm.prank(USER_1);
+        vm.expectRevert(abi.encodeWithSignature("EnforcedPause()"));
+        staking.stake(STAKING_AMOUNT);
+    }
+
     function test_Stake_UpdateReward() public {
         vm.roll(REWARDS_BLOCK);
         vm.prank(USER_1);
@@ -328,5 +337,42 @@ contract StakingTest is Test {
         staking.recoverNonLockedRewardTokens();
 
         assertEq(stakingToken.balanceOf(OWNER), nonLockedTokens);
+    }
+
+    function test_RecoverNonLockedRewardTokens_RevertsWhen_NotOwner() public {
+        vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", address(this)));
+        staking.recoverNonLockedRewardTokens();
+    }
+
+    // pause
+    function test_Pause() public {
+        vm.prank(OWNER);
+        staking.pause();
+
+        assertEq(staking.paused(), true);
+    }
+
+    function test_Pause_RevertsWhen_NotOwner() public {
+        vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", address(this)));
+        staking.pause();
+    }
+
+    // unpause
+    function test_Unpause() public {
+        vm.prank(OWNER);
+        staking.pause();
+
+        vm.prank(OWNER);
+        staking.unpause();
+
+        assertEq(staking.paused(), false);
+    }
+
+    function test_Unpause_RevertsWhen_NotOwner() public {
+        vm.prank(OWNER);
+        staking.pause();
+
+        vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", address(this)));
+        staking.unpause();
     }
 }
