@@ -2,16 +2,16 @@
 pragma solidity 0.8.26;
 
 import {Test} from "forge-std/Test.sol";
-import {SBT} from "../src/SBT.sol";
+import {SBTERC721} from "../src/SBTERC721.sol";
 
-contract SBTTest is Test {
-    SBT public sbt;
+contract SBTERC721Test is Test {
+    SBTERC721 public sbt;
 
     address public alice = makeAddr("alice");
     address public bob = makeAddr("bob");
 
     function setUp() public {
-        sbt = new SBT("PCE Contributor NFT", "PCE_CONTRIBUTOR", "https://nftdata.parallelnft.com/api/parallel-alpha/ipfs/");
+        sbt = new SBTERC721();
     }
 
     function test_owner() public view {
@@ -19,20 +19,20 @@ contract SBTTest is Test {
     }
 
     function test_Mint() public {
-        sbt.mint(alice, 1, 1);
-        assertEq(sbt.balanceOf(alice, 1), 1);
+        sbt.mint(alice);
+        assertEq(sbt.balanceOf(alice), 1);
     }
 
-    function test_safeTransferFrom() public {
+    function test_TransferFrom() public {
         vm.prank(address(this));
-        sbt.mint(alice, 1, 1);
+        sbt.mint(alice);
 
         vm.prank(alice);
         vm.expectRevert("SBT: non-transferable");
-        sbt.safeTransferFrom(alice, bob, 0, 1, "");
+        sbt.transferFrom(alice, bob, 0);
 
         vm.prank(alice);
         vm.expectRevert("SBT: non-transferable");
-        sbt.safeTransferFrom(alice, bob, 0, 1, "");
+        sbt.safeTransferFrom(alice, bob, 0);
     }
 }

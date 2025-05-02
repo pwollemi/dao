@@ -130,20 +130,20 @@ contract Campaigns is Initializable, OwnableUpgradeable {
         } else {
             require(campWinners[_campaignId].length > 0, "Campaign has no winners");
 
-            bool isWinner = false;
+            bool _isWinner = false;
             for (uint256 i = 0; i < campWinners[_campaignId].length; i++) {
                 if (campWinners[_campaignId][i] == msg.sender) {
-                    isWinner = true;
+                    _isWinner = true;
                     break;
                 }
             }
-            require(isWinner, "You are not a winner");
+            require(_isWinner, "You are not a winner");
             champWinnersClaimed[_campaignId][msg.sender] = true;
         }
 
         if (campaigns[_campaignId].isNFT) {
-            totalClaimedNFT[msg.sender]++;
-            nft.mint(msg.sender);
+            totalClaimedNFT[msg.sender] += campaigns[_campaignId].amount;
+            nft.mint(msg.sender, _campaignId, campaigns[_campaignId].amount);
         } else {
             totalClaimed[msg.sender] += campaigns[_campaignId].amount;
             token.transfer(msg.sender, campaigns[_campaignId].amount);
@@ -204,8 +204,8 @@ contract Campaigns is Initializable, OwnableUpgradeable {
         require(v == 27 || v == 28, "invalid v value");
     }
 
-    function recoverERC20(ERC20Upgradeable token) external onlyOwner {
-        token.transfer(msg.sender, token.balanceOf(address(this)));
+    function recoverERC20(ERC20Upgradeable _token) external onlyOwner {
+        _token.transfer(msg.sender, _token.balanceOf(address(this)));
     }
 
     function getStatus(uint256 _campaignId) external view returns (Status) {

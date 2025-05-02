@@ -19,7 +19,7 @@ contract CampaignsTest is Test {
 
     function setUp() public {
         token = new MockERC20();
-        nft = new SBT();
+        nft = new SBT("PCE Contributor NFT", "PCE_CONTRIBUTOR", "https://nftdata.parallelnft.com/api/parallel-alpha/ipfs/");
         campaigns = new Campaigns();
 
         campaigns.initialize(token, nft);

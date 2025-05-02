@@ -11,8 +11,27 @@ contract CampaignsScript is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(deployerPrivateKey);
 
-        SBT sbt = new SBT();
+        string memory uri = "https://nftdata.parallelnft.com/api/parallel-alpha/ipfs/";
+        string memory name = "PCE Contributor NFT";
+        string memory symbol = "PCE_CONTRIBUTOR";
+        string[5] memory tokenURIs = [
+            "QmbUVVQ88V4kTK15yEpfTv2Bm28Pmo1DPtusffeMNqrSxx",
+            "QmeRTdBRWeeP1Tpea8KMLC6zDh53boU7MJgqSdsnWGLFye",
+            "QmR2dLjCdD7wjyxSmWbWd7uVqBtNZ4C8iu51uxYpVp4Gyw",
+            "QmQT95WxczcqVaHkrtgeBfRgdikrVfAu1XPc6LnE2Jgw51",
+            "QmcwQc1eq5HfN9Xg2SCNXAPyB3gRu7K3XbZY48wphPjNDh"
+        ];
+
+        SBT sbt = new SBT(name, symbol, uri);
+
+        vm.roll(block.number + 1);
+        
         sbt.setMinter(address(this));
+        for (uint256 i = 0; i < tokenURIs.length; i++) {
+            sbt.setTokenURI(i, tokenURIs[i]);
+        }
+
+        sbt.mint(msg.sender, 1, 1);
 
         Campaigns campaigns = new Campaigns();
         campaigns.initialize(
@@ -20,85 +39,40 @@ contract CampaignsScript is Script {
             sbt
         );
 
-        Campaigns.Campaign memory campaign = Campaigns.Campaign({
-            title: "Test Campaign",
-            description: "Test Description",
-            amount: 10e18,
-            startDate: block.timestamp + 100,
-            endDate: block.timestamp + 1000,
-            validateSignatures: true,
-            isNFT: false
-        });
-        campaigns.createCampaign(campaign);
-        campaigns.createCampaign(campaign);
+        sbt.setMinter(address(campaigns));
 
         vm.roll(block.number + 1);
 
         Campaigns.Campaign memory _campaign = Campaigns.Campaign({
-            title: "Test Campaign",
-            description: "Test Description",
-            amount: 10e18,
+            title: "Airdrop Contributor NFTs",
+            description: "We will airdrop Contributor NFTs to PEACECOIN Contributors",
+            amount: 5,
             startDate: block.timestamp + 100,
             endDate: block.timestamp + 1000,
             validateSignatures: false,
-            isNFT: false
+            isNFT: true
         });
+
+        campaigns.createCampaign(_campaign);
+        campaigns.createCampaign(_campaign);
         campaigns.createCampaign(_campaign);
         campaigns.createCampaign(_campaign);
 
         vm.roll(block.number + 1);
 
-        campaigns.createCampaign(
-            Campaigns.Campaign({
-                title: "Test Campaign",
-                description: "Test Description",
-                amount: 10e18,
-                startDate: block.timestamp + 100,
-                endDate: block.timestamp + 1000,
-                validateSignatures: false,
-                isNFT: true
-            })
-        );
+        _campaign.title = "Airdrop Contributor NFTs 2";
+        _campaign.description = "We will airdrop Contributor NFTs to PEACECOIN Contributors 2";
+        _campaign.amount = 2;
+        _campaign.validateSignatures = true;
 
-        campaigns.createCampaign(
-            Campaigns.Campaign({
-                title: "Test Campaign",
-                description: "Test Description",
-                amount: 10e18,
-                startDate: block.timestamp + 100,
-                endDate: block.timestamp + 1000,
-                validateSignatures: false,
-                isNFT: true
-            })
-        );
-
-        campaigns.createCampaign(
-            Campaigns.Campaign({
-                title: "Airdrop Announcement: PCE Tokens for Top 10 Holders",
-                description: "The Peace Coin Foundation is pleased to announce an exclusive airdrop of PCE tokens to the top 10 PCE token holders. A snapshot of eligible wallets will be taken on February 25, 2025. Stay tuned for more details and ensure your holdings are up to date!",
-                amount: 10e18,
-                startDate: block.timestamp + 100,
-                endDate: block.timestamp + 10000,
-                validateSignatures: false,
-                isNFT: true
-            })
-        );
-
-        campaigns.createCampaign(
-            Campaigns.Campaign({
-                title: "Airdrop Announcement: PCE Tokens for Top 10 Holders",
-                description: "The Peace Coin Foundation is pleased to announce an exclusive airdrop of PCE tokens to the top 10 PCE token holders. A snapshot of eligible wallets will be taken on February 25, 2025. Stay tuned for more details and ensure your holdings are up to date!",
-                amount: 10e18,
-                startDate: block.timestamp + 100,
-                endDate: block.timestamp + 10000,
-                validateSignatures: false,
-                isNFT: true
-            })
-        );
-
-        address[] memory winners = new address[](2);
+        campaigns.createCampaign(_campaign);
+        campaigns.createCampaign(_campaign);
+        campaigns.createCampaign(_campaign);
+        
+        address[] memory winners = new address[](3);
         winners[0] = 0x6fD12d4d7E8e1D3E5EE6B3A6e8c7DD426Bb24BF5;
         winners[1] = 0x59178bAc7A9BBfa287F39887EAA2826666f14A2a;
+        winners[2] = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
 
         bytes32[] memory gist = new bytes32[](1);
         gist[0] = keccak256(abi.encodePacked("pwollemi"));
@@ -113,7 +87,6 @@ contract CampaignsScript is Script {
         campaigns.addCampWinners(5, winners, gist);
 
         vm.roll(block.number + 1);
-        campaigns.addCampWinners(7, winners, gist);
         campaigns.addCampWinners(6, winners, gist);
 
         console.log("Campaigns deployed at", address(campaigns));

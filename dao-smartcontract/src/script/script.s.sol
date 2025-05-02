@@ -25,6 +25,8 @@ contract script is Script {
         Timelock timelock = new Timelock();
         GovernorAlpha gov = new GovernorAlpha();
 
+        vm.roll(block.number + 1);
+
         Bounty bounty = new Bounty(); // Deploy Bounty Contract
         bounty.initialize(ERC20Upgradeable(PCE_TOKEN), _bountyAmount, address(gov));
 
@@ -66,8 +68,29 @@ contract script is Script {
 
         vm.roll(block.number + 1); // Wait for 1 block
 
+
+        // Metadata for SBT
+        string memory uri = "https://nftdata.parallelnft.com/api/parallel-alpha/ipfs/";
+        string memory name = "PCE Contributor NFT";
+        string memory symbol = "PCE_CONTRIBUTOR";
+        string[5] memory tokenURIs = [
+            "QmbUVVQ88V4kTK15yEpfTv2Bm28Pmo1DPtusffeMNqrSxx",
+            "QmeRTdBRWeeP1Tpea8KMLC6zDh53boU7MJgqSdsnWGLFye",
+            "QmR2dLjCdD7wjyxSmWbWd7uVqBtNZ4C8iu51uxYpVp4Gyw",
+            "QmQT95WxczcqVaHkrtgeBfRgdikrVfAu1XPc6LnE2Jgw51",
+            "QmcwQc1eq5HfN9Xg2SCNXAPyB3gRu7K3XbZY48wphPjNDh"
+        ];
+
+        SBT sbt = new SBT(name, symbol, uri);
+        sbt.setMinter(address(this));
+        
+        for (uint256 i = 0; i < tokenURIs.length; i++) {
+            sbt.setTokenURI(i, tokenURIs[i]);
+        }
+
+        vm.roll(block.number + 1);
+
         Campaigns campaigns = new Campaigns();
-        SBT sbt = new SBT();
         sbt.setMinter(address(campaigns));
 
         campaigns.initialize(
@@ -77,45 +100,56 @@ contract script is Script {
 
         ERC20Upgradeable(PCE_TOKEN).transfer(address(campaigns), 10000e18);
 
-        Campaigns.Campaign memory campaign = Campaigns.Campaign({
-            title: "Airdrop Announcement: PCE Tokens for Top 10 Holders",
-            description: "The Peace Coin Foundation is pleased to announce an exclusive airdrop of PCE tokens to the top 10 PCE token holders. A snapshot of eligible wallets will be taken on February 25, 2025. Stay tuned for more details and ensure your holdings are up to date!",
+        vm.roll(block.number + 1);
+        Campaigns.Campaign memory _campaign = Campaigns.Campaign({
+            title: "Airdrop Contributor NFTs",
+            description: "We will airdrop Contributor NFTs to PEACECOIN Contributors",
+            amount: 3,
             startDate: block.timestamp + 100,
-            endDate: block.timestamp + 3000,
-            amount: 10e18,
+            endDate: block.timestamp + 1000,
             validateSignatures: false,
-            isNFT: false
+            isNFT: true
         });
 
-        campaigns.createCampaign(campaign);
-        vm.roll(block.number + 1); // Wait for 1 block
+        campaigns.createCampaign(_campaign);
+        campaigns.createCampaign(_campaign);
+        campaigns.createCampaign(_campaign);
+        campaigns.createCampaign(_campaign);
 
-        campaigns.createCampaign(campaign);
-        campaigns.createCampaign(campaign);
+        vm.roll(block.number + 1);
 
-        campaign.validateSignatures = true;
-        campaigns.createCampaign(campaign);
-        vm.roll(block.number + 1); // Wait for 1 block
+        _campaign.title = "Airdrop Contributor NFTs 2";
+        _campaign.description = "We will airdrop Contributor NFTs to PEACECOIN Contributors 2";
+        _campaign.amount = 5;
+        _campaign.validateSignatures = true;
 
-        address[] memory winners = new address[](1);
-        winners[0] = deployerAddress;
-
+        campaigns.createCampaign(_campaign);
+        campaigns.createCampaign(_campaign);
+        campaigns.createCampaign(_campaign);
+        
+        address[] memory winners = new address[](3);
+        winners[0] = 0x6fD12d4d7E8e1D3E5EE6B3A6e8c7DD426Bb24BF5;
+        winners[1] = 0x59178bAc7A9BBfa287F39887EAA2826666f14A2a;
+        winners[2] = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
+        
         bytes32[] memory gist = new bytes32[](1);
         gist[0] = keccak256(abi.encodePacked("pwollemi"));
 
+        vm.roll(block.number + 1);
         campaigns.addCampWinners(0, winners, gist);
         campaigns.addCampWinners(1, winners, gist);
-        campaigns.addCampWinners(3, new address[](0), gist);
-        vm.roll(block.number + 1); // Wait for 1 block
 
-        campaign.isNFT = true;
-        campaigns.createCampaign(campaign);
-        vm.roll(block.number + 1); // Wait for 1 block
-
+        vm.roll(block.number + 1);
+        campaigns.addCampWinners(3, winners, gist);
         campaigns.addCampWinners(4, winners, gist);
-
-        campaigns.createCampaign(campaign);
         campaigns.addCampWinners(5, winners, gist);
+
+        vm.roll(block.number + 1);
+        campaigns.addCampWinners(6, winners, gist);
+
+        console.log("Campaigns deployed at", address(campaigns));
+        console.log("SBT deployed at", address(sbt));
+
 
         vm.roll(block.number + 1); // Wait for 1 block
 
