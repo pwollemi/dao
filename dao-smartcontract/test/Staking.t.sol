@@ -294,4 +294,39 @@ contract StakingTest is Test {
         assertEq(rewardsToken.balanceOf(USER_1), expectedReward);
         assertEq(rewardsToken.balanceOf(address(staking)), initialRewardsBalance - expectedReward);
     }
+
+    // recoverNonLockedRewardTokens
+    function test_RecoverNonLockedRewardTokens() public {
+        uint256 lockedTokens = REWARD_PER_BLOCK * BLOCKS_AMOUNT;
+        uint256 nonLockedTokens = rewardsToken.balanceOf(address(staking)) - lockedTokens;
+        vm.prank(OWNER);
+        vm.expectEmit(false, false, false, true);
+        emit RewardTokensRecovered(nonLockedTokens);
+        staking.recoverNonLockedRewardTokens();
+
+        assertEq(rewardsToken.balanceOf(OWNER), nonLockedTokens);
+    }
+
+    function test_RecoverNonLockedRewardTokens_StakingMatchesRewardsToken() public {
+        staking = new Staking();
+        staking.initialize(address(stakingToken), address(stakingToken), OWNER);
+        stakingToken.mint(address(staking), INITIAL_BALANCE);
+
+        vm.prank(OWNER);
+        staking.setRewards(REWARD_PER_BLOCK, STARTING_BLOCK, BLOCKS_AMOUNT);
+
+        vm.startPrank(USER_1);
+        stakingToken.approve(address(staking), INITIAL_BALANCE);
+        staking.stake(STAKING_AMOUNT);
+        vm.stopPrank();
+
+        uint256 lockedTokens = REWARD_PER_BLOCK * BLOCKS_AMOUNT;
+        uint256 nonLockedTokens = stakingToken.balanceOf(address(staking)) - lockedTokens - STAKING_AMOUNT;
+        vm.prank(OWNER);
+        vm.expectEmit(false, false, false, true);
+        emit RewardTokensRecovered(nonLockedTokens);
+        staking.recoverNonLockedRewardTokens();
+
+        assertEq(stakingToken.balanceOf(OWNER), nonLockedTokens);
+    }
 }
