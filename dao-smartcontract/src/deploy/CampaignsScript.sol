@@ -14,12 +14,15 @@ contract CampaignsScript is Script {
         string memory uri = "https://nftdata.parallelnft.com/api/parallel-alpha/ipfs/";
         string memory name = "PCE Contributor NFT";
         string memory symbol = "PCE_CONTRIBUTOR";
-        string[5] memory tokenURIs = [
+        string[8] memory tokenURIs = [
             "QmbUVVQ88V4kTK15yEpfTv2Bm28Pmo1DPtusffeMNqrSxx",
             "QmeRTdBRWeeP1Tpea8KMLC6zDh53boU7MJgqSdsnWGLFye",
             "QmR2dLjCdD7wjyxSmWbWd7uVqBtNZ4C8iu51uxYpVp4Gyw",
             "QmQT95WxczcqVaHkrtgeBfRgdikrVfAu1XPc6LnE2Jgw51",
-            "QmcwQc1eq5HfN9Xg2SCNXAPyB3gRu7K3XbZY48wphPjNDh"
+            "QmQhwbUsjoWCWRC4mpiMNjie8PFNzMyzPb32wvVbEVx2sb",
+            "QmQKdjT3PXnS3HqhcbYTfrP8cHNRGXQbRijL6d8fpK7EoA",
+            "QmPvFgQXCcQy8ZL52n8MKWKRuK8Emy1S1yprA3u25f4uLC",
+            "QmTu4k191oMPMKKj7VfZrLyamyoBXm56bhn4z5AMfnbEiw"
         ];
 
         SBT sbt = new SBT(name, symbol, uri);
@@ -29,6 +32,7 @@ contract CampaignsScript is Script {
         sbt.setMinter(address(this));
         for (uint256 i = 0; i < tokenURIs.length; i++) {
             sbt.setTokenURI(i, tokenURIs[i]);
+            vm.roll(block.number + 1);
         }
 
         sbt.mint(msg.sender, 1, 1);
