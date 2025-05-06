@@ -13,6 +13,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# DS_Store
+.DS_Store
+dao-smartcontract/.DS_Store
+dao-subgraph/.DS_Store
+core/.DS_Store
+
 # Optional npm cache directory
 .npm
 

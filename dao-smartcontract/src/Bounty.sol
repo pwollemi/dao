@@ -26,7 +26,11 @@ contract Bounty is Initializable, OwnableUpgradeable {
     mapping(address => BountyInfo) public contributorBounties;
     mapping(address => bool) public isContributor;
 
-    function initialize(ERC20Upgradeable _bountyToken, uint256 _bountyAmount, address _governance) public initializer {
+    function initialize(
+        ERC20Upgradeable _bountyToken,
+        uint256 _bountyAmount,
+        address _governance
+    ) public initializer {
         __Ownable_init(msg.sender);
         bountyAmount = _bountyAmount;
         bountyToken = _bountyToken;
@@ -46,8 +50,8 @@ contract Bounty is Initializable, OwnableUpgradeable {
     function addProposalBounty(uint256 _proposalId, uint256 _amount) external {
         require(_amount > 0, "Amount must be greater than 0");
         require(
-            IGovernance(governance).state(_proposalId) == ProposalState.Executed
-                || IGovernance(governance).state(_proposalId) == ProposalState.Succeeded,
+            IGovernance(governance).state(_proposalId) == ProposalState.Executed ||
+                IGovernance(governance).state(_proposalId) == ProposalState.Succeeded,
             "Invalid proposal state"
         );
 

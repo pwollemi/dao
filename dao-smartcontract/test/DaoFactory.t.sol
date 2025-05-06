@@ -171,7 +171,13 @@ contract DaoFactoryTest is Test {
         calldatas[0] = abi.encode(address(bob), 1000000);
 
         // Submit proposal
-        uint256 proposalId = governor.propose(targets, values, signatures, calldatas, "Test Proposal");
+        uint256 proposalId = governor.propose(
+            targets,
+            values,
+            signatures,
+            calldatas,
+            "Test Proposal"
+        );
 
         // Move past voting delay
         vm.roll(block.number + 11); // voting delay + 1

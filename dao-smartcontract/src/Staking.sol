@@ -26,7 +26,11 @@ contract Staking is IStaking, OwnableUpgradeable, ReentrancyGuardUpgradeable, Pa
     uint256 public totalStaked;
     mapping(address => uint256) public staked;
 
-    function initialize(address _stakingToken, address _rewardsToken, address _owner) external initializer {
+    function initialize(
+        address _stakingToken,
+        address _rewardsToken,
+        address _owner
+    ) external initializer {
         stakingToken = ERC20Upgradeable(_stakingToken);
         rewardsToken = ERC20Upgradeable(_rewardsToken);
 
@@ -46,12 +50,11 @@ contract Staking is IStaking, OwnableUpgradeable, ReentrancyGuardUpgradeable, Pa
         _;
     }
 
-    function setRewards(uint256 _rewardPerBlock, uint256 _startingBlock, uint256 _blocksAmount)
-        external
-        override
-        onlyOwner
-        updateReward(address(0))
-    {
+    function setRewards(
+        uint256 _rewardPerBlock,
+        uint256 _startingBlock,
+        uint256 _blocksAmount
+    ) external override onlyOwner updateReward(address(0)) {
         uint256 unlockedTokens = _getFutureRewardTokens();
 
         rewardPerBlock = _rewardPerBlock;
@@ -91,7 +94,9 @@ contract Staking is IStaking, OwnableUpgradeable, ReentrancyGuardUpgradeable, Pa
         getReward();
     }
 
-    function stake(uint256 _amount) external override whenNotPaused nonReentrant updateReward(msg.sender) {
+    function stake(
+        uint256 _amount
+    ) external override whenNotPaused nonReentrant updateReward(msg.sender) {
         require(_amount > 0, "Stake: can't stake 0");
         require(block.number < lastBlockWithReward, "Stake: staking  period is over");
 
@@ -123,7 +128,9 @@ contract Staking is IStaking, OwnableUpgradeable, ReentrancyGuardUpgradeable, Pa
     }
 
     function blocksWithRewardsPassed() public view override returns (uint256) {
-        uint256 from = lastUpdateBlock > firstBlockWithReward ? lastBlockWithReward : firstBlockWithReward;
+        uint256 from = lastUpdateBlock > firstBlockWithReward
+            ? lastBlockWithReward
+            : firstBlockWithReward;
         uint256 to = block.number > lastBlockWithReward ? lastBlockWithReward : block.number;
 
         return from > to ? 0 : to - from;
@@ -134,7 +141,8 @@ contract Staking is IStaking, OwnableUpgradeable, ReentrancyGuardUpgradeable, Pa
             return rewardPerTokenStored;
         }
 
-        uint256 accumulatedReward = (blocksWithRewardsPassed() * rewardPerBlock * (1e18)) / totalStaked;
+        uint256 accumulatedReward = (blocksWithRewardsPassed() * rewardPerBlock * (1e18)) /
+            totalStaked;
 
         return rewardPerTokenStored + accumulatedReward;
     }

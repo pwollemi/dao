@@ -78,7 +78,10 @@ contract DAOFactory is Ownable {
         uint256 timelockDelay
     ) external returns (bytes32) {
         require(communityToken != address(0), "Invalid governance token");
-        require(IGovernanceToken(communityToken).owner() == msg.sender, "Invalid community token owner");
+        require(
+            IGovernanceToken(communityToken).owner() == msg.sender,
+            "Invalid community token owner"
+        );
         require(bytes(daoName).length > 0, "Empty name not allowed");
         require(!daoNames[daoName], "DAO name already exists");
 
@@ -172,12 +175,22 @@ contract DAOFactory is Ownable {
         daos[daoId].socialConfig = newConfig;
 
         emit DAOSocialConfigUpdated(
-            daoId, newConfig.description, newConfig.website, newConfig.linkedin, newConfig.twitter, newConfig.telegram
+            daoId,
+            newConfig.description,
+            newConfig.website,
+            newConfig.linkedin,
+            newConfig.twitter,
+            newConfig.telegram
         );
     }
 
     event DAOSocialConfigUpdated(
-        bytes32 indexed daoId, string description, string website, string linkedin, string twitter, string telegram
+        bytes32 indexed daoId,
+        string description,
+        string website,
+        string linkedin,
+        string twitter,
+        string telegram
     );
 }
 

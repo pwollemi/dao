@@ -56,11 +56,10 @@ contract ContractFactoryTest is Test {
         contractFactory.deploy(bytes("Invalid EVM bytecode"));
     }
 
-    function getBytecodeWithConstructorArgs(bytes memory _bytecode, bytes memory _constructorArgs)
-        public
-        pure
-        returns (bytes memory)
-    {
+    function getBytecodeWithConstructorArgs(
+        bytes memory _bytecode,
+        bytes memory _constructorArgs
+    ) public pure returns (bytes memory) {
         return abi.encodePacked(_bytecode, _constructorArgs);
     }
 }
