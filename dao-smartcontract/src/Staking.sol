@@ -68,8 +68,7 @@ contract Staking is IStaking, OwnableUpgradeable, ReentrancyGuardUpgradeable, Pa
         uint256 lockedTokens = _getFutureRewardTokens();
         uint256 rewardBalance = address(stakingToken) != address(rewardsToken)
             ? rewardsToken.balanceOf(address(this))
-            // TODO: isn't this double counting the staked tokens?
-            : stakingToken.balanceOf(address(this)) + totalStaked;
+            : stakingToken.balanceOf(address(this)) - totalStaked;
 
         rewardTokensLocked = rewardTokensLocked - unlockedTokens + lockedTokens;
         require(rewardTokensLocked <= rewardBalance, "Not enough tokens for the rewards");
