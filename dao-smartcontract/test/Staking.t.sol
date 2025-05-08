@@ -23,6 +23,7 @@ contract StakingTest is Test {
 
     address public OWNER = makeAddr("OWNER");
     address public USER_1 = makeAddr("USER_1");
+    address public USER_2 = makeAddr("USER_2");
     uint256 public constant INITIAL_BALANCE = 1000e18;
     uint256 public constant STAKING_AMOUNT = INITIAL_BALANCE / 4;
     uint256 public constant REWARD_PER_BLOCK = 1e8;
@@ -42,6 +43,7 @@ contract StakingTest is Test {
     function setUp() public {
         vm.label(OWNER, "OWNER");
         vm.label(USER_1, "USER_1");
+        vm.label(USER_2, "USER_2");
 
         stakingToken = new MockERC20();
         rewardsToken = new MockERC20();
@@ -55,8 +57,12 @@ contract StakingTest is Test {
         staking.setRewards(REWARD_PER_BLOCK, STARTING_BLOCK, BLOCKS_AMOUNT);
 
         stakingToken.mint(USER_1, INITIAL_BALANCE);
+        stakingToken.mint(USER_2, INITIAL_BALANCE);
 
         vm.prank(USER_1);
+        stakingToken.approve(address(staking), INITIAL_BALANCE);
+
+        vm.prank(USER_2);
         stakingToken.approve(address(staking), INITIAL_BALANCE);
     }
 
@@ -113,7 +119,7 @@ contract StakingTest is Test {
     }
 
     // stake
-    function test_Stake() public {
+    function test_Stake_SingleUser() public {
         vm.prank(USER_1);
         vm.expectEmit(true, false, false, true);
         emit Staked(USER_1, STAKING_AMOUNT);
@@ -123,6 +129,21 @@ contract StakingTest is Test {
         assertEq(staking.totalStaked(), STAKING_AMOUNT);
         assertEq(stakingToken.balanceOf(address(staking)), STAKING_AMOUNT);
         assertEq(stakingToken.balanceOf(USER_1), INITIAL_BALANCE - STAKING_AMOUNT);
+    }
+
+    function test_Stake_TwoUsers() public {
+        vm.prank(USER_1);
+        staking.stake(STAKING_AMOUNT);
+
+        vm.prank(USER_2);
+        staking.stake(STAKING_AMOUNT);
+
+        assertEq(staking.staked(USER_1), STAKING_AMOUNT);
+        assertEq(staking.staked(USER_2), STAKING_AMOUNT);
+        assertEq(staking.totalStaked(), STAKING_AMOUNT * 2);
+        assertEq(stakingToken.balanceOf(address(staking)), STAKING_AMOUNT * 2);
+        assertEq(stakingToken.balanceOf(USER_1), INITIAL_BALANCE - STAKING_AMOUNT);
+        assertEq(stakingToken.balanceOf(USER_2), INITIAL_BALANCE - STAKING_AMOUNT);
     }
 
     function test_Stake_RevertsWhen_Paused() public {
@@ -265,8 +286,50 @@ contract StakingTest is Test {
         assertEq(rewardsToken.balanceOf(address(staking)), stakingRewardsInitialBalance - expectedReward);
     }
 
+    function test_GetReward_TwoUsers() public {
+        vm.prank(USER_1);
+        staking.stake(STAKING_AMOUNT);
+
+        vm.roll(REWARDS_BLOCK);
+
+        vm.prank(USER_2);
+        staking.stake(STAKING_AMOUNT);
+
+        vm.roll(REWARDS_BLOCK + 1);
+
+        uint256 expectedRewardUser1 = staking.earned(USER_1);
+        uint256 expectedRewardUser2 = staking.earned(USER_2);
+        uint256 stakingRewardsInitialBalance = rewardsToken.balanceOf(address(staking));
+
+        vm.prank(USER_1);
+        staking.getReward();
+
+        vm.prank(USER_2);
+        staking.getReward();
+
+        assertEq(staking.rewards(USER_1), 0);
+        assertEq(staking.rewards(USER_2), 0);
+        assertEq(rewardsToken.balanceOf(USER_1), expectedRewardUser1);
+        assertEq(rewardsToken.balanceOf(USER_2), expectedRewardUser2);
+        assertEq(
+            staking.rewardTokensLocked(), REWARD_PER_BLOCK * BLOCKS_AMOUNT - expectedRewardUser1 - expectedRewardUser2
+        );
+        assertEq(
+            rewardsToken.balanceOf(address(staking)),
+            stakingRewardsInitialBalance - expectedRewardUser1 - expectedRewardUser2
+        );
+
+        vm.prank(USER_1);
+        staking.withdraw(STAKING_AMOUNT);
+        assertEq(staking.staked(USER_1), 0);
+
+        vm.prank(USER_2);
+        staking.withdraw(STAKING_AMOUNT);
+        assertEq(staking.staked(USER_2), 0);
+    }
+
     // withdraw
-    function test_Withdraw() public {
+    function test_Withdraw_Full() public {
         vm.prank(USER_1);
         staking.stake(STAKING_AMOUNT);
 
@@ -280,6 +343,54 @@ contract StakingTest is Test {
         assertEq(staking.totalStaked(), 0);
         assertEq(stakingToken.balanceOf(USER_1), initialBalance + STAKING_AMOUNT);
         assertEq(stakingToken.balanceOf(address(staking)), 0);
+    }
+
+    function test_Withdraw_TwoUsers() public {
+        vm.prank(USER_1);
+        staking.stake(STAKING_AMOUNT);
+
+        vm.prank(USER_2);
+        staking.stake(STAKING_AMOUNT);
+
+        uint256 user1InitialBalance = stakingToken.balanceOf(USER_1);
+        vm.prank(USER_1);
+        staking.withdraw(STAKING_AMOUNT);
+        assertEq(staking.staked(USER_1), 0);
+        assertEq(staking.totalStaked(), STAKING_AMOUNT);
+        assertEq(stakingToken.balanceOf(USER_1), user1InitialBalance + STAKING_AMOUNT);
+        assertEq(stakingToken.balanceOf(address(staking)), STAKING_AMOUNT);
+
+        uint256 user2InitialBalance = stakingToken.balanceOf(USER_2);
+        vm.prank(USER_2);
+        staking.withdraw(STAKING_AMOUNT);
+        assertEq(staking.staked(USER_2), 0);
+        assertEq(staking.totalStaked(), 0);
+        assertEq(stakingToken.balanceOf(USER_2), user2InitialBalance + STAKING_AMOUNT);
+        assertEq(stakingToken.balanceOf(address(staking)), 0);
+    }
+
+    function test_Withdraw_TwoUsers_Partial() public {
+        vm.prank(USER_1);
+        staking.stake(STAKING_AMOUNT);
+
+        vm.prank(USER_2);
+        staking.stake(STAKING_AMOUNT);
+
+        uint256 user1InitialBalance = stakingToken.balanceOf(USER_1);
+        vm.prank(USER_1);
+        staking.withdraw(STAKING_AMOUNT / 2);
+        assertEq(staking.staked(USER_1), STAKING_AMOUNT / 2);
+        assertEq(staking.totalStaked(), STAKING_AMOUNT + STAKING_AMOUNT / 2);
+        assertEq(stakingToken.balanceOf(USER_1), user1InitialBalance + STAKING_AMOUNT / 2);
+        assertEq(stakingToken.balanceOf(address(staking)), STAKING_AMOUNT + STAKING_AMOUNT / 2);
+
+        uint256 user2InitialBalance = stakingToken.balanceOf(USER_2);
+        vm.prank(USER_2);
+        staking.withdraw(STAKING_AMOUNT);
+        assertEq(staking.staked(USER_2), 0);
+        assertEq(staking.totalStaked(), STAKING_AMOUNT / 2);
+        assertEq(stakingToken.balanceOf(USER_2), user2InitialBalance + STAKING_AMOUNT);
+        assertEq(stakingToken.balanceOf(address(staking)), STAKING_AMOUNT / 2);
     }
 
     function test_Withdraw_RevertsWhen_ZeroAmount() public {
