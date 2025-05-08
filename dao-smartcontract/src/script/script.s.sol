@@ -139,7 +139,6 @@ contract script is Script {
         gist[0] = keccak256(abi.encodePacked("pwollemi"));
 
         vm.roll(block.number + 1);
-        campaigns.addCampWinners(0, winners, gist);
         campaigns.addCampWinners(1, winners, gist);
 
         vm.roll(block.number + 1);
@@ -149,6 +148,7 @@ contract script is Script {
 
         vm.roll(block.number + 1);
         campaigns.addCampWinners(6, winners, gist);
+        campaigns.addCampWinners(7, winners, gist);
 
         console.log("Campaigns deployed at", address(campaigns));
         console.log("SBT deployed at", address(sbt));

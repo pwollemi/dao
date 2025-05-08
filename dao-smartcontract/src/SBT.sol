@@ -5,12 +5,15 @@ import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract SBT is ERC1155, Ownable {
+    
     uint256 private _nextTokenId;
-    mapping(address => bool) public minters;
     string public uri_;
     string public name;
     string public symbol;
     mapping(uint256 => string) public tokenURIs;
+    mapping(address => bool) public minters;
+
+    event SetTokenURI(uint256 indexed id, string uri);
 
     constructor(string memory _name, string memory _symbol, string memory _uri) ERC1155(_uri) Ownable(msg.sender) {
         name = _name;
@@ -25,6 +28,7 @@ contract SBT is ERC1155, Ownable {
 
     function setTokenURI(uint256 _id, string memory _tokenURI) external onlyOwner {
         tokenURIs[_id] = _tokenURI;
+        emit SetTokenURI(_id, _tokenURI);
     }
 
     function mint(address to, uint256 id, uint256 amount) external {

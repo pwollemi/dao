@@ -20,7 +20,12 @@ contract CampaignsTest is Test {
     function setUp() public {
         token = new MockERC20();
         nft = new SBT("PCE Contributor NFT", "PCE_CONTRIBUTOR", "https://nftdata.parallelnft.com/api/parallel-alpha/ipfs/");
+
+        // Deploy Campaigns contract
         campaigns = new Campaigns();
+
+        // Set Campaigns as minter for NFT
+        nft.setMinter(address(campaigns));
 
         campaigns.initialize(token, nft);
 
@@ -31,11 +36,11 @@ contract CampaignsTest is Test {
         Campaigns.Campaign memory campaign = Campaigns.Campaign({
             title: "Test Campaign",
             description: "Test Description",
-            amount: 10e18,
+            amount: 3,
             startDate: block.timestamp + 100,
             endDate: block.timestamp + 1000,
             validateSignatures: true,
-            isNFT: false
+            isNFT: true
         });
         campaigns.createCampaign(campaign);
 
@@ -47,15 +52,15 @@ contract CampaignsTest is Test {
             uint256 endDate,
             bool validateSignatures,
             bool isNFT
-        ) = campaigns.campaigns(0);
+        ) = campaigns.campaigns(1);
 
         assertEq(title, "Test Campaign");
         assertEq(description, "Test Description");
-        assertEq(amount, 10e18);
+        assertEq(amount, 3);
         assertGt(startDate, 0);
         assertGt(endDate, startDate);
         assertEq(validateSignatures, true);
-        assertEq(isNFT, false);
+        assertEq(isNFT, true);
         assertEq(campaigns.campaignId(), 1);
     }
 
@@ -72,7 +77,7 @@ contract CampaignsTest is Test {
                 startDate: block.timestamp + 100,
                 endDate: block.timestamp + 1000,
                 validateSignatures: true,
-                isNFT: false
+                isNFT: true
             })
         );
     }
@@ -84,16 +89,17 @@ contract CampaignsTest is Test {
         _winners[0] = alice;
         _winners[1] = bob;
 
-        campaigns.addCampWinners(1, _winners, new bytes32[](0));
+        bytes32[] memory _gists = new bytes32[](1);
+        _gists[0] = gist;
+
+        campaigns.addCampWinners(1, _winners, _gists);
 
         vm.prank(alice);
         vm.expectRevert(abi.encodeWithSignature("OwnableUnauthorizedAccount(address)", alice));
-        campaigns.addCampWinners(0, _winners, new bytes32[](0));
-
-        bytes32[] memory _gists = new bytes32[](1);
-        _gists[0] = gist;
+        campaigns.addCampWinners(1, _winners, _gists);
+        
         vm.prank(address(this));
-        campaigns.addCampWinners(0, new address[](0), _gists);
+        campaigns.addCampWinners(1, new address[](0), _gists);
     }
 
     function test_claimCampWinner() public {
@@ -101,7 +107,7 @@ contract CampaignsTest is Test {
 
         vm.warp(block.timestamp + 1500);
 
-        uint256 campaignId = 0;
+        uint256 campaignId = 1;
         string memory message = "Claim Bounty for dApp.xyz";
 
         uint256 signerPrivateKey = 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80;
@@ -118,7 +124,7 @@ contract CampaignsTest is Test {
         bytes memory signature = abi.encodePacked(r, s, v);
         campaigns.claimCampaign(campaignId, gist, message, signature);
 
-        assertEq(token.balanceOf(alice), 10e18);
+        assertEq(nft.balanceOf(alice, campaignId), 3);
 
         vm.prank(bob);
         vm.expectRevert("Invalid signature");
