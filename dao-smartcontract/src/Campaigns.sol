@@ -65,6 +65,7 @@ contract Campaigns is Initializable, OwnableUpgradeable {
         require(_campaign.amount > 0, "Amount must be greater than 0");
         require(_campaign.startDate > block.timestamp, "Start date must be in the future");
 
+        campaignId++;
         campaigns[campaignId] = _campaign;
 
         emit CampaignCreated(
@@ -77,7 +78,6 @@ contract Campaigns is Initializable, OwnableUpgradeable {
             _campaign.validateSignatures,
             _campaign.isNFT
         );
-        campaignId++;
     }
 
     function addCampWinners(
@@ -85,6 +85,8 @@ contract Campaigns is Initializable, OwnableUpgradeable {
         address[] memory _addresses,
         bytes32[] memory _gists
     ) external onlyOwner {
+        require(_campaignId > 0, "Campaign id must be greater than 0");
+
         Campaign memory campaign = campaigns[_campaignId];
         if (campaign.validateSignatures) {
             require(_gists.length > 0, "Gists length must be greater than 0");
