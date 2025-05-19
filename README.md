@@ -1,5 +1,14 @@
 # PCE DAO Protocol
 
+<div align="center">
+
+![coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)
+![built with docker](https://img.shields.io/badge/built%20with-docker-blue)
+![CI build](https://img.shields.io/badge/CI%20build-passing-brightgreen)
+![built with solidity](https://img.shields.io/badge/built%20with-solidity-blue)
+
+</div>
+
 ## Docker Setup
 
 ### Prerequisites

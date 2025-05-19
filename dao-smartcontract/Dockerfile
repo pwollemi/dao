@@ -20,6 +20,7 @@ WORKDIR /dao-smartcontract
 
 COPY . .
 
+RUN cp .env_example .env
 RUN bash -c '. .env'
 
 RUN rm -rf .gitmodules && \
