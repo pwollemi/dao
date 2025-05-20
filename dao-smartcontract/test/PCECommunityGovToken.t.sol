@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.26;
 
-import {PCECommunityGovToken} from "../src/PCECommunityGovToken.sol";
+import {PCECommunityGovToken} from "../src/mocks/PCECommunityGovToken.sol";
 import {MockERC20} from "../src/mocks/MockERC20.sol";
 import {Test} from "forge-std/Test.sol";
 

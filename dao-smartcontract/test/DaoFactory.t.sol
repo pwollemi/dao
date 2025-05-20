@@ -4,7 +4,7 @@ pragma solidity 0.8.26;
 import {Test, Vm} from "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 import {DAOFactory} from "../src/DAOFactory.sol";
-import {PCECommunityGovToken} from "../src/PCECommunityGovToken.sol";
+import {PCECommunityGovToken} from "../src/mocks/PCECommunityGovToken.sol";
 import {MockERC20} from "../src/mocks/MockERC20.sol";
 import {GovernorAlpha} from "../src/Governance/GovernorAlpha.sol";
 import {Timelock} from "../src/Governance/Timelock.sol";

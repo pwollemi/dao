@@ -2,7 +2,7 @@
 pragma solidity 0.8.26;
 
 import "forge-std/Script.sol";
-import "../PCEGovToken.sol";
+import "../mocks/PCEGovToken.sol";
 
 contract PCEGovTokenScript is Script {
     function run() external {
