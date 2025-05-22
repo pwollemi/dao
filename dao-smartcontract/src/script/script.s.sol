@@ -8,7 +8,7 @@ import "../Governance/GovernorAlpha.sol";
 import "../Governance/Timelock.sol";
 import "../ContractFactory.sol";
 import "../DAOFactory.sol";
-import "../PCECommunityGovToken.sol";
+import "../mocks/PCECommunityGovToken.sol";
 import "../Campaigns.sol";
 import "../SBT.sol";
 import {console} from "forge-std/console.sol";

@@ -3,7 +3,7 @@ pragma solidity 0.8.26;
 
 import "forge-std/Script.sol";
 import {DAOFactory} from "../DAOFactory.sol";
-import {PCECommunityGovToken} from "../PCECommunityGovToken.sol";
+import {PCECommunityGovToken} from "../mocks/PCECommunityGovToken.sol";
 import {GovernorAlpha} from "../Governance/GovernorAlpha.sol";
 import {Timelock} from "../Governance/Timelock.sol";
 
