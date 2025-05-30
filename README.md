@@ -1,4 +1,4 @@
-# PCE DAO Protocol
+# PEACE COIN Protocol DAO
 
 <div align="center">
 
