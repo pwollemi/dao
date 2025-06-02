@@ -27,10 +27,10 @@ jobs:
 
       - name: Filter coverage report
         run: |
-          grep -v '/mocks/' ./lcov.info | grep -v '/interfaces/' | grep -v '/test/' | grep -v '/script/' > ./lcov.filtered.info
+          lcov --remove ./lcov.info '*/mocks/*' '*/interfaces/*' '*/test/*' '*/script/*' -o ./lcov.filtered.info
 
       - name: Upload filtered coverage to Codecov
         uses: codecov/codecov-action@v5
         with:
-          files: ./lcov.info
+          files: ./lcov.filtered.info
           token: ${{ secrets.CODECOV_TOKEN }}
