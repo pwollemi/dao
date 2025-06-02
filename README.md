@@ -7,7 +7,7 @@
 ![CI build](https://img.shields.io/badge/CI%20build-passing-brightgreen)
 ![built with solidity](https://img.shields.io/badge/built%20with-solidity-blue)
 
-[![codecov](https://codecov.io/gh/peacecoin-protocol/dao/branch/main/graph/badge.svg)](https://codecov.io/gh/peacecoin-protocol/dao)
+[![codecov](https://codecov.io/gh/pwollemi/dao/branch/main/graph/badge.svg)](https://codecov.io/gh/pwollemi/dao)
 
 </div>
 
@@ -46,5 +46,5 @@
    ```
 
 ## Depoloy DAO for Tally
-TBD
--
+
+## TBD
